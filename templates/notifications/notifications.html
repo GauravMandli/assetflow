@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}System Alerts - AssetFlow ERP{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Glowing unread dot indicator */
+    .unread-indicator {
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
+        display: inline-block;
+        flex-shrink: 0;
+    }
+    .notification-timeline-header {
+        font-family: var(--font-heading);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+        margin: 1.5rem 0 0.75rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .notification-timeline-header::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: var(--border-color);
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Notifications</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Notifications Center</h4>
+        <p class="text-secondary small mb-0">You have <strong class="text-primary" id="unread-count-text">3 unread notifications</strong> requiring your attention.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-erp-secondary btn-sm d-flex align-items-center gap-2" onclick="markAllAsRead();">
+            <i class="bi bi-check2-all"></i>
+            <span>Mark All Read</span>
+        </button>
+        <button class="btn btn-erp-secondary btn-sm d-flex align-items-center gap-2" onclick="clearAllNotifications();">
+            <i class="bi bi-trash"></i>
+            <span>Clear Logs</span>
+        </button>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Filter Sidebar -->
+    <div class="col-12 col-lg-3">
+        <div class="card-erp p-3">
+            <h6 class="fw-bold mb-3">Filter by Category</h6>
+            <div class="list-group list-group-flush border-0">
+                <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-2 py-2 rounded active" onclick="filterNotifications('all', this);">
+                    <span>All Notifications</span>
+                    <span class="badge bg-primary rounded-pill" id="badge-all">5</span>
+                </button>
+                <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-2 py-2 rounded" onclick="filterNotifications('security', this);">
+                    <span>Security Events</span>
+                    <span class="badge bg-secondary rounded-pill" id="badge-security">1</span>
+                </button>
+                <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-2 py-2 rounded" onclick="filterNotifications('maintenance', this);">
+                    <span>Maintenance & Services</span>
+                    <span class="badge bg-secondary rounded-pill" id="badge-maint">2</span>
+                </button>
+                <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-2 py-2 rounded" onclick="filterNotifications('allocation', this);">
+                    <span>Allocations Requests</span>
+                    <span class="badge bg-secondary rounded-pill" id="badge-alloc">2</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Cards with Timelines -->
+    <div class="col-12 col-lg-9">
+        <div class="card-erp">
+            <!-- Search bar -->
+            <div class="nav-search-box mb-4 w-100">
+                <i class="bi bi-search"></i>
+                <input type="text" id="notif-search-input" class="nav-search-input" placeholder="Search notification details...">
+            </div>
+
+            <div id="notifications-list-container">
+                
+                <!-- Section 1: Today -->
+                <div class="notification-timeline-header">Today</div>
+                
+                <!-- Notif 1 -->
+                <div class="card-erp p-3 mb-3 border d-flex gap-3 align-items-start notification-card-item" data-notif-category="maintenance" data-unread="true">
+                    <span class="unread-indicator mt-2"></span>
+                    <div class="bg-warning-light text-warning rounded-circle d-flex align-items-center justify-content-center p-2 mt-1" style="font-size: 1.2rem; width: 38px; height: 38px;">
+                        <i class="bi bi-wrench"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-1">
+                            <h6 class="fw-bold mb-0 text-sm">Maintenance Task Overdue: Tesla Service</h6>
+                            <span class="text-secondary text-xs">Today, 11:20 AM</span>
+                        </div>
+                        <p class="text-secondary text-xs mb-2">Work order #MNT-0974 scheduled for March 10th has not been marked resolved. Urgent technician review is requested.</p>
+                        <div class="d-flex gap-2">
+                            <a href="/maintenance/" class="btn btn-xs btn-erp-primary py-1" style="font-size:0.75rem;">Open Work Order</a>
+                            <button class="btn btn-xs btn-erp-secondary py-1" style="font-size:0.75rem;" onclick="dismissNotification(this);">Dismiss</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notif 2 -->
+                <div class="card-erp p-3 mb-3 border d-flex gap-3 align-items-start notification-card-item" data-notif-category="security" data-unread="true">
+                    <span class="unread-indicator mt-2"></span>
+                    <div class="bg-danger-light text-danger rounded-circle d-flex align-items-center justify-content-center p-2 mt-1" style="font-size: 1.2rem; width: 38px; height: 38px;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-1">
+                            <h6 class="fw-bold mb-0 text-danger text-sm">Failed Admin Login Warning</h6>
+                            <span class="text-secondary text-xs">Today, 08:14 AM</span>
+                        </div>
+                        <p class="text-secondary text-xs mb-2">Failed administrator credentials check from host IP 198.162.1.200 (Houston, US). Login blocked due to OTP verification failure.</p>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-xs btn-danger text-xs py-1" onclick="window.showToast('Access Blocked', 'danger'); dismissNotification(this);">Block Access IP</button>
+                            <button class="btn btn-xs btn-erp-secondary text-xs py-1" onclick="dismissNotification(this);">Clear Alert</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Yesterday -->
+                <div class="notification-timeline-header">Yesterday</div>
+
+                <!-- Notif 3 -->
+                <div class="card-erp p-3 mb-3 border d-flex gap-3 align-items-start notification-card-item" data-notif-category="allocation" data-unread="true">
+                    <span class="unread-indicator mt-2"></span>
+                    <div class="bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center p-2 mt-1" style="font-size: 1.2rem; width: 38px; height: 38px;">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-1">
+                            <h6 class="fw-bold mb-0 text-sm">Custody Allocation Approval Pending</h6>
+                            <span class="text-secondary text-xs">Yesterday, 04:30 PM</span>
+                        </div>
+                        <p class="text-secondary text-xs mb-2">Sarah Jenkins requested allocation for iPad Air 5th Gen (AST-2026-056). Initial condition: Excellent.</p>
+                        <div class="d-flex gap-2">
+                            <a href="/allocation/" class="btn btn-xs btn-success text-xs py-1">Approve</a>
+                            <button class="btn btn-xs btn-erp-secondary text-xs py-1" onclick="dismissNotification(this);">Dismiss</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notif 4 -->
+                <div class="card-erp p-3 mb-3 border d-flex gap-3 align-items-start notification-card-item" data-notif-category="maintenance" data-unread="false">
+                    <span class="unread-indicator mt-2 bg-transparent shadow-none"></span>
+                    <div class="bg-success-light text-success rounded-circle d-flex align-items-center justify-content-center p-2 mt-1" style="font-size: 1.2rem; width: 38px; height: 38px;">
+                        <i class="bi bi-wrench"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-1">
+                            <h6 class="fw-bold mb-0 text-sm">Maintenance Job Resolved: Printer copier</h6>
+                            <span class="text-secondary text-xs">Yesterday, 09:12 AM</span>
+                        </div>
+                        <p class="text-secondary text-xs mb-0">Work order #MNT-0952 filter clean resolved by tech. Asset returned to Floor 2 active service.</p>
+                    </div>
+                </div>
+
+                <!-- Section 3: Earlier -->
+                <div class="notification-timeline-header">Earlier</div>
+
+                <!-- Notif 5 -->
+                <div class="card-erp p-3 border d-flex gap-3 align-items-start notification-card-item" data-notif-category="allocation" data-unread="false">
+                    <span class="unread-indicator mt-2 bg-transparent shadow-none"></span>
+                    <div class="bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center p-2 mt-1" style="font-size: 1.2rem; width: 38px; height: 38px;">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-1">
+                            <h6 class="fw-bold mb-0 text-sm">iPad Handover Signed By Employee</h6>
+                            <span class="text-secondary text-xs">March 08, 02:40 PM</span>
+                        </div>
+                        <p class="text-secondary text-xs mb-0">Custody handover signature verified for Dave Grohl (R&D Lab) on Dell UltraSharp 32" monitor.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Search handler
+    const searchInput = document.getElementById('notif-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', () => {
+            const filterText = searchInput.value.toLowerCase();
+            const items = document.querySelectorAll('.notification-card-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(filterText)) {
+                    item.style.setProperty('display', 'flex', 'important');
+                } else {
+                    item.style.setProperty('display', 'none', 'important');
+                }
+            });
+        });
+    }
+
+    // Filter categories handler
+    function filterNotifications(category, element) {
+        // Toggle active tabs
+        document.querySelectorAll('.list-group-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+
+        const items = document.querySelectorAll('.notification-card-item');
+        items.forEach(item => {
+            const cat = item.getAttribute('data-notif-category');
+            if (category === 'all' || cat === category) {
+                item.style.setProperty('display', 'flex', 'important');
+            } else {
+                item.style.setProperty('display', 'none', 'important');
+            }
+        });
+        
+        window.showToast('Filtering notifications: ' + category, 'info');
+    }
+
+    // Mark all as read
+    function markAllAsRead() {
+        const indicators = document.querySelectorAll('.unread-indicator');
+        indicators.forEach(ind => {
+            ind.className = 'unread-indicator mt-2 bg-transparent shadow-none';
+        });
+        
+        const cards = document.querySelectorAll('.notification-card-item');
+        cards.forEach(card => card.setAttribute('data-unread', 'false'));
+        
+        document.getElementById('unread-count-text').textContent = '0 unread notifications';
+        window.showToast('All notifications marked read.', 'success');
+    }
+
+    // Clear all alerts
+    function clearAllNotifications() {
+        document.getElementById('notifications-list-container').innerHTML = `
+            <div class="text-center py-5 text-secondary">
+                <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+                <span>No notifications found in catalog.</span>
+            </div>
+        `;
+        document.getElementById('unread-count-text').textContent = '0 unread notifications';
+        
+        // Update badge counts
+        document.getElementById('badge-all').textContent = '0';
+        document.getElementById('badge-security').textContent = '0';
+        document.getElementById('badge-maint').textContent = '0';
+        document.getElementById('badge-alloc').textContent = '0';
+        
+        window.showToast('Notifications logs cleared.', 'info');
+    }
+
+    // Dismiss single notification
+    function dismissNotification(buttonEl) {
+        const card = buttonEl.closest('.notification-card-item');
+        if (card) {
+            const isUnread = card.getAttribute('data-unread') === 'true';
+            
+            // Animate fade out and remove
+            card.style.transition = 'all 0.3s ease';
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(50px)';
+            
+            card.addEventListener('transitionend', () => {
+                card.remove();
+                
+                // Recalculate unread total
+                if (isUnread) {
+                    const currentCount = document.querySelectorAll('.notification-card-item[data-unread="true"]').length;
+                    document.getElementById('unread-count-text').textContent = currentCount + ' unread notifications';
+                }
+                
+                // Recalculate total badge count
+                const totalLeft = document.querySelectorAll('.notification-card-item').length;
+                document.getElementById('badge-all').textContent = totalLeft;
+                
+                window.showToast('Notification cleared', 'info');
+            });
+        }
+    }
+</script>
+{% endblock %}

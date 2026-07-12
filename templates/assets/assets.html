@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Asset Registry - AssetFlow ERP{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Asset Registry</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Asset Registry & Life-Cycle</h4>
+        <p class="text-secondary small mb-0">Search, verify, and register physical assets, download tags, and monitor activity history logs.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Asset Directory List -->
+    <div class="col-12 col-xxl-8">
+        <div class="table-responsive-container">
+            <div class="table-filter-bar">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="nav-search-box" style="min-width: 240px;">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="nav-search-input" placeholder="Search Tag, Model, or Serial..." data-table-search="assets-registry-table">
+                    </div>
+                    
+                    <select class="form-select w-auto" data-table-filter-category="assets-registry-table">
+                        <option value="">All Categories</option>
+                        <option value="IT Hardware">IT Hardware</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Vehicles">Vehicles</option>
+                        <option value="Software">Software</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-erp-secondary btn-sm d-flex align-items-center gap-2" onclick="window.showToast('Exporting catalog data...', 'success');">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        <span class="d-none d-sm-inline">Export</span>
+                    </button>
+                    <!-- Trigger Right Column Form Tab -->
+                    <button class="btn btn-erp-primary btn-sm d-flex align-items-center gap-2" onclick="switchToFormTab();">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Register Asset</span>
+                    </button>
+                </div>
+            </div>
+            
+            <table class="table table-erp text-nowrap align-middle" id="assets-registry-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Asset Tag</th>
+                        <th class="sortable">Asset Details</th>
+                        <th class="sortable">Category</th>
+                        <th class="sortable">Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr onclick="loadAssetDetail('AST-2026-091', 'MacBook Pro 16\" M3 Max', 'IT Hardware', 'CN-0M3MAX-782', '$3,499.00', '2026-02-14', 'Sarah Jenkins', 'In Use', 'Allocated')" style="cursor:pointer;">
+                        <td><strong>AST-2026-091</strong></td>
+                        <td>
+                            <div class="fw-semibold text-primary">MacBook Pro 16" M3 Max</div>
+                            <span class="text-secondary text-xs">S/N: CN-0M3MAX-782</span>
+                        </td>
+                        <td data-cell-category="IT Hardware">IT Hardware</td>
+                        <td><span class="badge-erp badge-erp-primary">Allocated</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary px-2" onclick="event.stopPropagation(); window.showToast('Edit Asset Tag AST-2026-091', 'info')"><i class="bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr onclick="loadAssetDetail('AST-2026-105', 'Herman Miller Aeron Chair', 'Furniture', 'HM-AERON-9923', '$1,250.00', '2025-11-05', 'IT Storage B', 'Available', 'Available')" style="cursor:pointer;">
+                        <td><strong>AST-2026-105</strong></td>
+                        <td>
+                            <div class="fw-semibold text-primary">Herman Miller Aeron Chair</div>
+                            <span class="text-secondary text-xs">S/N: HM-AERON-9923</span>
+                        </td>
+                        <td data-cell-category="Furniture">Furniture</td>
+                        <td><span class="badge-erp badge-erp-success">Available</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary px-2" onclick="event.stopPropagation(); window.showToast('Edit Asset Tag AST-2026-105', 'info')"><i class="bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr onclick="loadAssetDetail('AST-2026-088', 'Tesla Model 3 Long Range', 'Vehicles', '5YJ3E1EB8LF-022', '$48,200.00', '2025-08-30', 'Marketing Fleet', 'In Repair', 'Maintenance')" style="cursor:pointer;">
+                        <td><strong>AST-2026-088</strong></td>
+                        <td>
+                            <div class="fw-semibold text-primary">Tesla Model 3 Long Range</div>
+                            <span class="text-secondary text-xs">S/N: 5YJ3E1EB8LF-022</span>
+                        </td>
+                        <td data-cell-category="Vehicles">Vehicles</td>
+                        <td><span class="badge-erp badge-erp-warning">Maintenance</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary px-2" onclick="event.stopPropagation(); window.showToast('Edit Asset Tag AST-2026-088', 'info')"><i class="bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr onclick="loadAssetDetail('AST-2026-061', 'Tektronix Oscilloscope MDO4000', 'IT Hardware', 'TEK-90234-A', '$8,950.00', '2025-06-12', 'Amelia Watson', 'Reserved', 'Reserved')" style="cursor:pointer;">
+                        <td><strong>AST-2026-061</strong></td>
+                        <td>
+                            <div class="fw-semibold text-primary">Tektronix Oscilloscope MDO4000</div>
+                            <span class="text-secondary text-xs">S/N: TEK-90234-A</span>
+                        </td>
+                        <td data-cell-category="IT Hardware">IT Hardware</td>
+                        <td><span class="badge-erp badge-erp-info">Reserved</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary px-2" onclick="event.stopPropagation(); window.showToast('Edit Asset Tag AST-2026-061', 'info')"><i class="bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr onclick="loadAssetDetail('AST-2026-014', 'Logitech MX Master 3 Mouse', 'Furniture', 'LOGI-MX3-01', '$99.00', '2025-01-10', 'None', 'Lost', 'Lost')" style="cursor:pointer;">
+                        <td><strong>AST-2026-014</strong></td>
+                        <td>
+                            <div class="fw-semibold text-primary">Logitech MX Master 3 Mouse</div>
+                            <span class="text-secondary text-xs">S/N: LOGI-MX3-01</span>
+                        </td>
+                        <td data-cell-category="Furniture">Furniture</td>
+                        <td><span class="badge-erp badge-erp-danger">Lost</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary px-2" onclick="event.stopPropagation(); window.showToast('Edit Asset Tag AST-2026-014', 'info')"><i class="bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr onclick="loadAssetDetail('AST-2026-003', 'Office Desk L-Shaped White', 'Furniture', 'DSK-L-039', '$450.00', '2022-04-10', 'Disposed Store', 'Disposed', 'Disposed')" style="cursor:pointer;">
+                        <td><strong>AST-2026-003</strong></td>
+                        <td>
+                            <div class="fw-semibold text-primary">Office Desk L-Shaped White</div>
+                            <span class="text-secondary text-xs">S/N: DSK-L-039</span>
+                        </td>
+                        <td data-cell-category="Furniture">Furniture</td>
+                        <td><span class="badge bg-secondary text-white text-xs px-2 py-1 rounded-pill">Disposed</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary px-2" onclick="event.stopPropagation(); window.showToast('Edit Asset Tag AST-2026-003', 'info')"><i class="bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light-card flex-wrap gap-2">
+                <span class="text-secondary text-xs">Showing 1 to 6 of 6 entries</span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Dual-Tab details and registration forms -->
+    <div class="col-12 col-xxl-4">
+        <!-- Tab Selector Menu -->
+        <ul class="nav nav-tabs nav-tabs-erp" id="assetSideTabs" role="tablist">
+            <li class="nav-item w-50" role="presentation">
+                <button class="nav-link w-100 text-center active" id="details-subtab" data-bs-toggle="tab" data-bs-target="#details-subpanel" type="button" role="tab" aria-controls="details-subpanel" aria-selected="true">
+                    <i class="bi bi-info-circle me-1"></i>Specs & Logs
+                </button>
+            </li>
+            <li class="nav-item w-50" role="presentation">
+                <button class="nav-link w-100 text-center" id="register-subtab" data-bs-toggle="tab" data-bs-target="#register-subpanel" type="button" role="tab" aria-controls="register-subpanel" aria-selected="false">
+                    <i class="bi bi-plus-circle me-1"></i>Register Form
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="assetSideTabsContent">
+            <!-- Sub Panel 1: Details & Lifecycle Logs -->
+            <div class="tab-pane fade show active" id="details-subpanel" role="tabpanel" aria-labelledby="details-subtab">
+                <div class="card-erp p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3 border-bottom pb-2">
+                        <div>
+                            <span class="text-xs text-muted font-monospace" id="det-tag">AST-2026-091</span>
+                            <h5 class="fw-bold mb-1" id="det-name">MacBook Pro 16" M3 Max</h5>
+                            <span class="badge-erp badge-erp-primary" id="det-badge">Allocated</span>
+                        </div>
+                        
+                        <!-- Dynamic QR Code Placeholder -->
+                        <div class="text-center border p-1 rounded bg-white shadow-sm" style="width: 70px;">
+                            <i class="bi bi-qr-code text-dark" style="font-size: 2.2rem; line-height: 1;"></i>
+                            <span class="d-block text-muted" style="font-size: 0.5rem; font-weight:700;">PRINT LABEL</span>
+                        </div>
+                    </div>
+
+                    <!-- Specifications Details -->
+                    <div class="row g-3 mb-4 text-xs text-secondary border-bottom pb-3">
+                        <div class="col-6">
+                            <strong>Category</strong><br>
+                            <span class="text-dark fw-semibold" id="det-category">IT Hardware</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Serial Number</strong><br>
+                            <span class="text-dark fw-semibold" id="det-serial">CN-0M3MAX-782</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Cost / Purchase Value</strong><br>
+                            <span class="text-dark fw-semibold text-primary" id="det-cost">$3,499.00</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Registration Date</strong><br>
+                            <span class="text-dark fw-semibold" id="det-date">2026-02-14</span>
+                        </div>
+                        <div class="col-12">
+                            <strong>Assigned Location / Custody</strong><br>
+                            <span class="text-dark fw-semibold" id="det-user">Sarah Jenkins (IT Infrastructure)</span>
+                        </div>
+                    </div>
+
+                    <!-- Uploaded Image Preview & Document link placeholders -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">Assets Assets attachments</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="border rounded p-2 text-center bg-light">
+                                    <i class="bi bi-image text-secondary fs-4 d-block mb-1"></i>
+                                    <span class="text-secondary" style="font-size:0.7rem;">Device_Photo.png</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="border rounded p-2 text-center bg-light" style="cursor: pointer;" onclick="window.showToast('Downloading warranty invoice PDF...', 'success');">
+                                    <i class="bi bi-file-earmark-pdf text-danger fs-4 d-block mb-1"></i>
+                                    <span class="text-secondary" style="font-size:0.7rem;">Purchase_Invoice.pdf</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Timeline -->
+                    <div>
+                        <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-1"></i> Life-Cycle Activity History</h6>
+                        <div class="position-relative ps-4" style="border-left: 2px solid var(--border-color);">
+                            <!-- Event 1 -->
+                            <div class="position-relative mb-3">
+                                <div class="position-absolute rounded-circle bg-primary" style="width: 10px; height: 10px; left: -21px; top: 4px;"></div>
+                                <div class="text-xs fw-semibold text-dark">Asset Allocated to Sarah Jenkins</div>
+                                <div class="text-secondary" style="font-size: 0.7rem;">2026-02-14 • Approved by Admin</div>
+                            </div>
+                            <!-- Event 2 -->
+                            <div class="position-relative mb-3">
+                                <div class="position-absolute rounded-circle bg-success" style="width: 10px; height: 10px; left: -21px; top: 4px;"></div>
+                                <div class="text-xs fw-semibold text-dark">Compliance Audit Completed</div>
+                                <div class="text-secondary" style="font-size: 0.7rem;">2026-02-01 • Condition: Excellent</div>
+                            </div>
+                            <!-- Event 3 -->
+                            <div class="position-relative">
+                                <div class="position-absolute rounded-circle bg-secondary" style="width: 10px; height: 10px; left: -21px; top: 4px;"></div>
+                                <div class="text-xs fw-semibold text-dark">Asset Registered into Inventory Catalog</div>
+                                <div class="text-secondary" style="font-size: 0.7rem;">2026-01-10 • Input by sarah.jenkins@assetflow.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub Panel 2: Register Asset Form -->
+            <div class="tab-pane fade" id="register-subpanel" role="tabpanel" aria-labelledby="register-subtab">
+                <div class="card-erp p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle text-primary me-2"></i> Register New Asset</h5>
+                    <form onsubmit="event.preventDefault(); window.showToast('Asset Registered Successfully!', 'success');">
+                        <div class="mb-3">
+                            <label class="form-label">Asset Name / Model</label>
+                            <input type="text" class="form-control" placeholder="e.g. Dell Latitude 7420 Laptop" required>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Serial Number</label>
+                                <input type="text" class="form-control" placeholder="e.g. CN-0X1" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Category</option>
+                                    <option value="IT">IT Hardware</option>
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Vehicles">Vehicles</option>
+                                    <option value="Software">Software</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Purchase Value ($)</label>
+                                <input type="number" step="0.01" class="form-control" placeholder="1299.99" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Purchase Date</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                        </div>
+                        <!-- File Upload placeholders -->
+                        <div class="mb-3">
+                            <label class="form-label">Asset Photo Upload</label>
+                            <input class="form-control form-control-sm" type="file" accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Warranty / Invoice Document (PDF)</label>
+                            <input class="form-control form-control-sm" type="file" accept="application/pdf">
+                        </div>
+                        <button type="submit" class="w-100 btn-erp-primary mt-2">Confirm Registration</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab Toggling helper
+    function switchToFormTab() {
+        const registerTab = new bootstrap.Tab(document.getElementById('register-subtab'));
+        registerTab.show();
+    }
+
+    // Dynamic Loader for Asset Specs Details
+    function loadAssetDetail(tag, name, category, serial, cost, date, user, statusName, statusVal) {
+        document.getElementById('det-tag').textContent = tag;
+        document.getElementById('det-name').textContent = name;
+        document.getElementById('det-category').textContent = category;
+        document.getElementById('det-serial').textContent = serial;
+        document.getElementById('det-cost').textContent = cost;
+        document.getElementById('det-date').textContent = date;
+        document.getElementById('det-user').textContent = user;
+        
+        const badge = document.getElementById('det-badge');
+        badge.textContent = statusName;
+        
+        // Reset classes
+        badge.className = 'badge-erp';
+        if (statusVal === 'Available') badge.classList.add('badge-erp-success');
+        else if (statusVal === 'Allocated') badge.classList.add('badge-erp-primary');
+        else if (statusVal === 'Reserved') badge.classList.add('badge-erp-info');
+        else if (statusVal === 'Maintenance') badge.classList.add('badge-erp-warning');
+        else if (statusVal === 'Lost') badge.classList.add('badge-erp-danger');
+        else badge.className = 'badge bg-secondary text-white text-xs px-2 py-1 rounded-pill';
+        
+        // Return view focus to the specs tab
+        const specsTab = new bootstrap.Tab(document.getElementById('details-subtab'));
+        specsTab.show();
+        
+        window.showToast('Selected Asset Tag: ' + tag, 'info');
+    }
+</script>
+{% endblock %}

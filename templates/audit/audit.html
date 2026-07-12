@@ -1,0 +1,361 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Asset Audit & Verification - AssetFlow ERP{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Audit & Compliance</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Audit & Physical Verification Cycles</h4>
+        <p class="text-secondary small mb-0">Schedule inventory compliance counts, assign corporate auditors, and analyze discrepancies.</p>
+    </div>
+    <div>
+        <button class="btn btn-erp-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#newAuditCycleModal">
+            <i class="bi bi-calendar-plus"></i>
+            <span>Schedule Audit Cycle</span>
+        </button>
+    </div>
+</div>
+
+<!-- Tabs Navigation -->
+<ul class="nav nav-tabs-erp d-flex gap-2" id="auditTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="scanner-tab" data-bs-toggle="tab" data-bs-target="#scanner-panel" type="button" role="tab" aria-controls="scanner-panel" aria-selected="true">
+            <i class="bi bi-qr-code-scan me-2"></i>Active Verification Scanner
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="records-tab" data-bs-toggle="tab" data-bs-target="#records-panel" type="button" role="tab" aria-controls="records-panel" aria-selected="false">
+            <i class="bi bi-journal-text me-2"></i>Audit Records Logs
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports-panel" type="button" role="tab" aria-controls="reports-panel" aria-selected="false">
+            <i class="bi bi-graph-up me-2"></i>Discrepancy Reports
+        </button>
+    </li>
+</ul>
+
+<!-- Tabs Content Wrapper -->
+<div class="tab-content mt-3" id="auditTabsContent">
+    
+    <!-- Tab 1: Active Cycles & Scanner Verification -->
+    <div class="tab-pane fade show active" id="scanner-panel" role="tabpanel" aria-labelledby="scanner-tab">
+        <div class="row g-4">
+            
+            <!-- Scanner Card & Auditor Assignment -->
+            <div class="col-12 col-lg-5 col-xl-4">
+                <div class="card-erp bg-light mb-4">
+                    <div class="text-center py-3">
+                        <div class="fs-1 text-primary mb-2">
+                            <i class="bi bi-qr-code-scan"></i>
+                        </div>
+                        <h5 class="fw-bold">Physically Verify Asset</h5>
+                        <p class="text-secondary text-xs px-3">Assign auditor and scan barcodes to verify location status.</p>
+                    </div>
+                    
+                    <form onsubmit="event.preventDefault(); window.showToast('Verifying tag details...', 'info'); document.getElementById('audit-scanned-feedback').style.display='block';">
+                        <div class="mb-3 px-3">
+                            <label class="form-label text-xs">Assign Auditor / Committee</label>
+                            <select class="form-select form-select-sm" required>
+                                <option value="Sarah">Sarah Jenkins (Admin)</option>
+                                <option value="CommitteeA">Audit Committee A (Finance)</option>
+                                <option value="TechB">Technical Auditor B (IT)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group px-3 mb-3">
+                            <input type="text" id="auditScannedTag" class="form-control form-control-sm" placeholder="Enter Asset Tag (e.g. AST-2026-091)" required>
+                            <button class="btn btn-sm btn-erp-primary" type="submit">Scan</button>
+                        </div>
+                    </form>
+                    
+                    <!-- Scanner Feedback container -->
+                    <div id="audit-scanned-feedback" class="mx-3 my-3 border rounded p-3 bg-white" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary text-white text-xs">AST-2026-091</span>
+                            <button class="btn-close" style="font-size:0.65rem;" onclick="document.getElementById('audit-scanned-feedback').style.display='none'"></button>
+                        </div>
+                        <h6 class="fw-bold mb-1">MacBook Pro 16" M3 Max</h6>
+                        <div class="text-secondary text-xs mb-2">Listed location: <strong>NY HQ - Floor 4</strong></div>
+                        
+                        <div class="d-flex flex-column gap-2">
+                            <button class="btn btn-sm btn-success text-xs py-1" onclick="window.showToast('Verified: In Location', 'success'); document.getElementById('audit-scanned-feedback').style.display='none';"><i class="bi bi-check-circle me-1"></i> Mark Verified</button>
+                            <button class="btn btn-sm btn-warning text-xs text-dark py-1" onclick="window.showToast('Flagged as Damaged!', 'warning'); document.getElementById('audit-scanned-feedback').style.display='none';"><i class="bi bi-exclamation-triangle me-1"></i> Flag Damaged</button>
+                            <button class="btn btn-sm btn-danger text-xs py-1" onclick="window.showToast('Flagged as Missing!', 'danger'); document.getElementById('audit-scanned-feedback').style.display='none';"><i class="bi bi-x-circle me-1"></i> Flag Missing</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Cycle Details card -->
+                <div class="card-erp">
+                    <h6 class="fw-bold mb-2">Active Cycle Status</h6>
+                    <div class="d-flex justify-content-between text-xs text-secondary mb-1">
+                        <span>Cycle Name</span>
+                        <strong class="text-dark">Q1 Hardware Count</strong>
+                    </div>
+                    <div class="d-flex justify-content-between text-xs text-secondary mb-1">
+                        <span>Total Assets to Audit</span>
+                        <strong class="text-dark">450 Items</strong>
+                    </div>
+                    <div class="d-flex justify-content-between text-xs text-secondary mb-3">
+                        <span>Progress</span>
+                        <strong class="text-primary">82% Verified</strong>
+                    </div>
+                    <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar bg-success" style="width: 82%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Queue table -->
+            <div class="col-12 col-lg-7 col-xl-8">
+                <div class="table-responsive-container mb-0 h-100 d-flex flex-column">
+                    <div class="table-filter-bar">
+                        <h6 class="m-0 fw-bold">Active Verification Queue</h6>
+                    </div>
+                    <table class="table table-erp text-nowrap align-middle" style="font-size: 0.8rem;">
+                        <thead>
+                            <tr>
+                                <th>Asset Tag</th>
+                                <th>Asset Specs</th>
+                                <th>Target Location</th>
+                                <th>Assigned Auditor</th>
+                                <th>Action status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>AST-2026-105</strong></td>
+                                <td>Herman Miller Aeron</td>
+                                <td>NY HQ - Floor 3</td>
+                                <td>Committee A</td>
+                                <td>
+                                    <button class="btn btn-xs btn-success px-2 py-0.5 me-1" onclick="window.showToast('Marked Verified', 'success')">Verified</button>
+                                    <button class="btn btn-xs btn-warning px-2 py-0.5 text-dark me-1" onclick="window.showToast('Marked Damaged', 'warning')">Damaged</button>
+                                    <button class="btn btn-xs btn-danger px-2 py-0.5" onclick="window.showToast('Marked Missing', 'danger')">Missing</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>AST-2026-088</strong></td>
+                                <td>Tesla Model 3 Long Range</td>
+                                <td>Marketing fleet</td>
+                                <td>Tech B</td>
+                                <td>
+                                    <button class="btn btn-xs btn-success px-2 py-0.5 me-1" onclick="window.showToast('Marked Verified', 'success')">Verified</button>
+                                    <button class="btn btn-xs btn-warning px-2 py-0.5 text-dark me-1" onclick="window.showToast('Marked Damaged', 'warning')">Damaged</button>
+                                    <button class="btn btn-xs btn-danger px-2 py-0.5" onclick="window.showToast('Marked Missing', 'danger')">Missing</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Tab 2: Audit Records & Logs Table -->
+    <div class="tab-pane fade" id="records-panel" role="tabpanel" aria-labelledby="records-tab">
+        <div class="table-responsive-container">
+            <div class="table-filter-bar">
+                <h6 class="m-0 fw-bold">Completed Audit Logs</h6>
+                <div class="nav-search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="nav-search-input" placeholder="Search audits..." data-table-search="audit-records-table">
+                </div>
+            </div>
+            <table class="table table-erp text-nowrap align-middle" id="audit-records-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Cycle Ref</th>
+                        <th class="sortable">Cycle Name</th>
+                        <th class="sortable">Auditor Group</th>
+                        <th class="sortable text-center">Verified</th>
+                        <th class="sortable text-center">Missing</th>
+                        <th class="sortable text-center">Damaged</th>
+                        <th class="sortable">Date Completed</th>
+                        <th class="sortable">Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>AUD-2026-012</strong></td>
+                        <td>NY HQ Floor 4 Audit</td>
+                        <td>Committee A</td>
+                        <td class="text-center fw-semibold text-success">88</td>
+                        <td class="text-center fw-semibold text-danger">2</td>
+                        <td class="text-center fw-semibold text-warning">0</td>
+                        <td>2026-03-01</td>
+                        <td><span class="badge-erp badge-erp-success">Closed</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary" onclick="window.showToast('Downloading Audit PDF Report...', 'info')">Report PDF</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>AUD-2026-010</strong></td>
+                        <td>London Office Audit</td>
+                        <td>External Auditor Hub</td>
+                        <td class="text-center fw-semibold text-success">140</td>
+                        <td class="text-center fw-semibold text-danger">0</td>
+                        <td class="text-center fw-semibold text-warning">1</td>
+                        <td>2026-02-18</td>
+                        <td><span class="badge-erp badge-erp-success">Closed</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary" onclick="window.showToast('Downloading Audit PDF Report...', 'info')">Report PDF</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab 3: Discrepancy Reports & Analytics -->
+    <div class="tab-pane fade" id="reports-panel" role="tabpanel" aria-labelledby="reports-tab">
+        <div class="row g-4">
+            
+            <!-- Statistics summary cards -->
+            <div class="col-12 col-md-3">
+                <div class="card-erp border-start border-success border-4 text-center py-4 bg-white">
+                    <span class="text-secondary text-xs text-uppercase d-block mb-1">Items Verified</span>
+                    <h3 class="fw-bold mb-0 text-success">228</h3>
+                    <span class="text-secondary text-xs">No discrepancy found</span>
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-3">
+                <div class="card-erp border-start border-danger border-4 text-center py-4 bg-white">
+                    <span class="text-secondary text-xs text-uppercase d-block mb-1">Missing Items</span>
+                    <h3 class="fw-bold mb-0 text-danger">2</h3>
+                    <span class="text-secondary text-xs">Flagged for investigation</span>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-3">
+                <div class="card-erp border-start border-warning border-4 text-center py-4 bg-white">
+                    <span class="text-secondary text-xs text-uppercase d-block mb-1">Damaged Items</span>
+                    <h3 class="fw-bold mb-0 text-warning">1</h3>
+                    <span class="text-secondary text-xs">Service tickets scheduled</span>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-3">
+                <div class="card-erp border-start border-primary border-4 text-center py-4 bg-white">
+                    <span class="text-secondary text-xs text-uppercase d-block mb-1">Total Loss Cost ($)</span>
+                    <h3 class="fw-bold mb-0 text-primary">$4,500.00</h3>
+                    <span class="text-secondary text-xs">Replacement estimations</span>
+                </div>
+            </div>
+
+            <!-- Workflow status timeline panel -->
+            <div class="col-12 col-lg-8">
+                <div class="card-erp h-100">
+                    <h5 class="fw-bold mb-4">Audit Cycle Lifecycle Roadmap</h5>
+                    
+                    <div class="d-flex flex-column gap-4 position-relative ps-4" style="border-left: 2px solid var(--border-color);">
+                        <!-- Step 1 -->
+                        <div class="position-relative">
+                            <div class="position-absolute rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 22px; height: 22px; left: -32px; top: 0;"><i class="bi bi-check-lg" style="font-size:0.75rem;"></i></div>
+                            <h6 class="fw-bold mb-1">Step 1: Cycle Planning & Scheduling</h6>
+                            <p class="text-secondary text-xs mb-0">Cycle "Q1 Hardware Count" scheduled by Sarah Jenkins on 2026-03-01. Assigned verification committees.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="position-relative">
+                            <div class="position-absolute rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 22px; height: 22px; left: -32px; top: 0;"><i class="bi bi-check-lg" style="font-size:0.75rem;"></i></div>
+                            <h6 class="fw-bold mb-1">Step 2: Scans & Physical Counts</h6>
+                            <p class="text-secondary text-xs mb-0">Auditors actively scanning asset barcodes and comparing tags with listed database registers. Current completion: 82%.</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="position-relative">
+                            <div class="position-absolute rounded-circle bg-warning text-white d-flex align-items-center justify-content-center" style="width: 22px; height: 22px; left: -32px; top: 0;"><i class="bi bi-clock-history" style="font-size:0.75rem;"></i></div>
+                            <h6 class="fw-bold mb-1">Step 3: Discrepancy Reconciliation (Pending)</h6>
+                            <p class="text-secondary text-xs mb-0">Locate missing assets or issue service requests for items marked "Damaged" during inspections.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location statistics -->
+            <div class="col-12 col-lg-4">
+                <div class="card-erp bg-light h-100">
+                    <h5 class="fw-bold mb-3">Verification by Office Location</h5>
+                    <div class="d-flex flex-column gap-3 text-xs text-secondary">
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>New York Headquarters</span>
+                                <strong class="text-dark">92% Complete</strong>
+                            </div>
+                            <div class="progress" style="height:4px;"><div class="progress-bar bg-success" style="width:92%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>London Development Hub</span>
+                                <strong class="text-dark">100% Complete</strong>
+                            </div>
+                            <div class="progress" style="height:4px;"><div class="progress-bar bg-success" style="width:100%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>San Francisco R&D Lab</span>
+                                <strong class="text-dark">40% Complete</strong>
+                            </div>
+                            <div class="progress" style="height:4px;"><div class="progress-bar bg-warning" style="width:40%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Schedule Audit Cycle Modal -->
+<div class="modal fade" id="newAuditCycleModal" tabindex="-1" aria-labelledby="newAuditCycleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--border-radius-md); background-color: var(--card-bg);">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold" id="newAuditCycleModalLabel"><i class="bi bi-calendar-plus text-primary me-2"></i> Schedule Audit Cycle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <form onsubmit="event.preventDefault(); window.showToast('Audit Cycle Scheduled!', 'success'); bootstrap.Modal.getInstance(document.getElementById('newAuditCycleModal')).hide();">
+                    <div class="mb-3">
+                        <label class="form-label">Audit Cycle Title</label>
+                        <input type="text" class="form-control" placeholder="e.g. Q2 Hardware Count" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Target Location / Department</label>
+                        <select class="form-select" required>
+                            <option value="">Select Target Office</option>
+                            <option value="NY">New York HQ - All Floors</option>
+                            <option value="SF">San Francisco Lab</option>
+                            <option value="LDN">London Hub</option>
+                        </select>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-erp-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-erp-primary">Confirm Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

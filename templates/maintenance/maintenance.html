@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Maintenance & Repair - AssetFlow ERP{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Maintenance</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Maintenance & Repair Workflows</h4>
+        <p class="text-secondary small mb-0">Track lifecycle hardware fixes, assign internal technicians, and process tickets from request to resolution.</p>
+    </div>
+</div>
+
+<!-- Tabs Navigation -->
+<ul class="nav nav-tabs-erp d-flex gap-2" id="maintenanceTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="kanban-tab" data-bs-toggle="tab" data-bs-target="#kanban-panel" type="button" role="tab" aria-controls="kanban-panel" aria-selected="true">
+            <i class="bi bi-columns-gap me-2"></i>Kanban Board
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="registry-tab" data-bs-toggle="tab" data-bs-target="#registry-panel" type="button" role="tab" aria-controls="registry-panel" aria-selected="false">
+            <i class="bi bi-list-task me-2"></i>Service Registry Table
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="form-tab" data-bs-toggle="tab" data-bs-target="#form-panel" type="button" role="tab" aria-controls="form-panel" aria-selected="false">
+            <i class="bi bi-wrench me-2"></i>Log Ticket & Lifecycle View
+        </button>
+    </li>
+</ul>
+
+<!-- Tabs Content Wrapper -->
+<div class="tab-content mt-3" id="maintenanceTabsContent">
+    
+    <!-- Tab 1: Kanban Board -->
+    <div class="tab-pane fade show active" id="kanban-panel" role="tabpanel" aria-labelledby="kanban-tab">
+        <div class="kanban-board">
+            
+            <!-- Column 1: Pending -->
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title"><i class="bi bi-clock text-warning"></i> Pending</span>
+                    <span class="kanban-column-count">1</span>
+                </div>
+                <div class="kanban-cards-container">
+                    <div class="kanban-card" onclick="loadTicketDetails('#MNT-0982', 'Cisco Switch Stack (AST-009)', 'Fan failure in Server Rack A-3. High vibrations logged.', 'Critical', 'Pending', 'Sarah Jenkins', 'Unassigned')">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-danger text-white text-xs">Critical</span>
+                            <span class="text-secondary text-xs">#MNT-0982</span>
+                        </div>
+                        <h6 class="kanban-card-title">Server Rack Cooling failure</h6>
+                        <p class="text-secondary text-xs mb-2">Cooling unit #3 fan speed dropping. Urgent scan required.</p>
+                        <div class="kanban-card-meta">
+                            <span class="fw-semibold">AST-2026-009</span>
+                            <span class="badge bg-secondary text-white text-xs">IT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Approved / Scheduled -->
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title"><i class="bi bi-calendar-check text-info"></i> Approved</span>
+                    <span class="kanban-column-count">1</span>
+                </div>
+                <div class="kanban-cards-container">
+                    <div class="kanban-card" onclick="loadTicketDetails('#MNT-0974', 'Tesla Model 3 Fleet #2 (AST-088)', 'Annual brake pad replacement and system calibration check.', 'Medium', 'Approved', 'Global Fleet Vendor', 'Unassigned')">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary text-white text-xs">Medium</span>
+                            <span class="text-secondary text-xs">#MNT-0974</span>
+                        </div>
+                        <h6 class="kanban-card-title">Tesla Model 3 Brake Service</h6>
+                        <p class="text-secondary text-xs mb-2">Scheduled annual brake wear checks.</p>
+                        <div class="kanban-card-meta">
+                            <span class="fw-semibold">AST-2026-088</span>
+                            <span class="badge bg-secondary text-white text-xs">Fleet</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Technician Assigned / In Progress -->
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title"><i class="bi bi-play-circle text-primary"></i> In Progress</span>
+                    <span class="kanban-column-count">1</span>
+                </div>
+                <div class="kanban-cards-container">
+                    <div class="kanban-card" onclick="loadTicketDetails('#MNT-0968', 'Herman Miller Aeron (AST-105)', 'Armrest replacement assembly. Left hinge loose.', 'Low', 'In Progress', 'John Doe (IT Desk)', 'Dave Grohl')">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-success text-white text-xs">Low</span>
+                            <span class="text-secondary text-xs">#MNT-0968</span>
+                        </div>
+                        <h6 class="kanban-card-title">Aeron Chair Hinge Fix</h6>
+                        <p class="text-secondary text-xs mb-2">Technician John D. currently replacing component parts.</p>
+                        <div class="kanban-card-meta">
+                            <span class="fw-semibold">AST-2026-105</span>
+                            <span class="badge bg-secondary text-white text-xs">Office</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 4: Resolved -->
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title"><i class="bi bi-check-circle text-success"></i> Resolved</span>
+                    <span class="kanban-column-count">1</span>
+                </div>
+                <div class="kanban-cards-container">
+                    <div class="kanban-card" style="opacity: 0.85;" onclick="loadTicketDetails('#MNT-0952', 'HQ AC Unit Floor 3 (AST-001)', 'Air filter replacement check completed.', 'Medium', 'Resolved', 'Facility Team', 'Admin Office')">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-secondary text-white text-xs">Low</span>
+                            <span class="text-secondary text-xs">#MNT-0952</span>
+                        </div>
+                        <h6 class="kanban-card-title">HQ AC Filter Replacement</h6>
+                        <p class="text-secondary text-xs mb-2">Filters replaced. Intake metrics normal.</p>
+                        <div class="kanban-card-meta">
+                            <span class="fw-semibold">AST-2026-001</span>
+                            <span class="badge bg-secondary text-white text-xs">Facility</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Tab 2: Service Registry Table -->
+    <div class="tab-pane fade" id="registry-panel" role="tabpanel" aria-labelledby="registry-tab">
+        <div class="table-responsive-container">
+            <div class="table-filter-bar">
+                <h6 class="m-0 fw-bold">Enterprise Maintenance Log</h6>
+                <div class="nav-search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="nav-search-input" placeholder="Search ticket ref, asset, tech..." data-table-search="maintenance-log-table">
+                </div>
+            </div>
+            <table class="table table-erp text-nowrap align-middle" id="maintenance-log-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Ticket ID</th>
+                        <th class="sortable">Asset Ref</th>
+                        <th class="sortable">Issue Description</th>
+                        <th class="sortable">Priority</th>
+                        <th class="sortable">Assigned Tech</th>
+                        <th class="sortable">Current Stage</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr onclick="loadTicketDetails('#MNT-0982', 'Cisco Switch Stack (AST-009)', 'Fan failure in Server Rack A-3. High vibrations logged.', 'Critical', 'Pending', 'Sarah Jenkins', 'Unassigned')" style="cursor:pointer;">
+                        <td><strong>#MNT-0982</strong></td>
+                        <td>AST-2026-009</td>
+                        <td>Server Rack Cooling unit fan failure</td>
+                        <td><span class="badge bg-danger text-white text-xs">Critical</span></td>
+                        <td>Unassigned</td>
+                        <td><span class="badge-erp badge-erp-warning">Pending</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-primary" onclick="event.stopPropagation(); window.showToast('Approving Ticket...', 'success')">Approve</button>
+                        </td>
+                    </tr>
+                    <tr onclick="loadTicketDetails('#MNT-0968', 'Herman Miller Aeron (AST-105)', 'Armrest replacement assembly. Left hinge loose.', 'Low', 'In Progress', 'John Doe (IT Desk)', 'Dave Grohl')" style="cursor:pointer;">
+                        <td><strong>#MNT-0968</strong></td>
+                        <td>AST-2026-105</td>
+                        <td>Aeron Chair Hinge Fix</td>
+                        <td><span class="badge bg-success text-white text-xs">Low</span></td>
+                        <td>John Doe (IT Desk)</td>
+                        <td><span class="badge-erp badge-erp-primary">In Progress</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-xs btn-erp-secondary" onclick="event.stopPropagation(); window.showToast('Resolving Ticket...', 'success')">Resolve</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab 3: Log Ticket Form & Specs Lifecycle View -->
+    <div class="tab-pane fade" id="form-panel" role="tabpanel" aria-labelledby="form-tab">
+        <div class="row g-4">
+            
+            <!-- Log Ticket Form -->
+            <div class="col-12 col-lg-6">
+                <div class="card-erp">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-file-earmark-plus text-primary me-2"></i> Log Service Request</h5>
+                    <form onsubmit="event.preventDefault(); window.showToast('Maintenance service ticket logged successfully!', 'success');">
+                        <div class="mb-3">
+                            <label class="form-label">Asset Tag Reference</label>
+                            <input type="text" class="form-control" placeholder="e.g. AST-2026-091" required>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Severity Priority</label>
+                                <select class="form-select" required>
+                                    <option value="Low">Low Priority</option>
+                                    <option value="Medium">Medium Priority</option>
+                                    <option value="High">High Priority</option>
+                                    <option value="Critical">Critical Failure</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Assign Technician</label>
+                                <input type="text" class="form-control" placeholder="e.g. John Doe (IT Support)">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Failure Summary</label>
+                            <input type="text" class="form-control" placeholder="Brief explanation of the failure..." required>
+                        </div>
+                        <!-- File/Photo upload -->
+                        <div class="mb-3">
+                            <label class="form-label">Attach Image of Fault / Damage</label>
+                            <input type="file" class="form-control form-control-sm" accept="image/*">
+                            <div class="text-secondary text-xs mt-1">Upload a photo of the damaged component if available.</div>
+                        </div>
+                        <button type="submit" class="btn btn-erp-primary w-100 mt-2">Log Service Ticket</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lifecycle Details Viewer -->
+            <div class="col-12 col-lg-6">
+                <div class="card-erp" id="ticket-specs-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3 border-bottom pb-2">
+                        <div>
+                            <span class="text-xs text-muted font-monospace" id="tk-id">#MNT-0982</span>
+                            <h5 class="fw-bold mb-1" id="tk-title">Cisco Switch Stack (AST-009)</h5>
+                            <span class="badge bg-danger text-white text-xs" id="tk-priority">Critical</span>
+                        </div>
+                        <span class="badge bg-warning text-dark text-xs py-1 px-2" id="tk-status">Pending</span>
+                    </div>
+
+                    <div class="text-secondary text-xs mb-3 border-bottom pb-3">
+                        <strong>Issue description:</strong>
+                        <p class="text-dark mt-1" id="tk-desc">Fan failure in Server Rack A-3. High vibrations logged.</p>
+                        
+                        <div class="row g-2 mt-2">
+                            <div class="col-6">
+                                <strong>Logged by:</strong><br>
+                                <span class="text-dark" id="tk-reporter">Sarah Jenkins</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Assigned Tech:</strong><br>
+                                <span class="text-dark" id="tk-tech">Unassigned</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fault image preview mock -->
+                    <div class="mb-3">
+                        <strong class="text-xs d-block mb-1 text-secondary">Uploaded Fault Photo:</strong>
+                        <div class="border rounded p-3 text-center bg-light" style="max-height: 150px; overflow: hidden;">
+                            <i class="bi bi-image text-secondary fs-2 d-block"></i>
+                            <span class="text-secondary text-xs">fault_chassis_view.png</span>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance Timeline -->
+                    <div>
+                        <h6 class="fw-bold mb-3" style="font-size:0.8rem;"><i class="bi bi-bezier2 me-1"></i> Maintenance Progress Steps</h6>
+                        <div class="d-flex justify-content-between text-center position-relative px-1" style="font-size:0.65rem;">
+                            <!-- Connecting bar -->
+                            <div class="position-absolute bg-primary" style="height: 2px; width: 85%; top: 9px; left: 8%; z-index: 1;"></div>
+                            
+                            <div style="z-index:2;">
+                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px;" id="tl-step-1"><i class="bi bi-check-lg"></i></div>
+                                <span>Requested</span>
+                            </div>
+                            <div style="z-index:2;">
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px;" id="tl-step-2"><i class="bi bi-circle"></i></div>
+                                <span>Approved</span>
+                            </div>
+                            <div style="z-index:2;">
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px;" id="tl-step-3"><i class="bi bi-circle"></i></div>
+                                <span>Tech Assign</span>
+                            </div>
+                            <div style="z-index:2;">
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px;" id="tl-step-4"><i class="bi bi-circle"></i></div>
+                                <span>In Progress</span>
+                            </div>
+                            <div style="z-index:2;">
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px;" id="tl-step-5"><i class="bi bi-circle"></i></div>
+                                <span>Resolved</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Load ticket detail details on click
+    function loadTicketDetails(id, title, desc, priority, status, reporter, tech) {
+        document.getElementById('tk-id').textContent = id;
+        document.getElementById('tk-title').textContent = title;
+        document.getElementById('tk-desc').textContent = desc;
+        document.getElementById('tk-reporter').textContent = reporter;
+        document.getElementById('tk-tech').textContent = tech;
+        
+        // Priority Badge styling
+        const pBadge = document.getElementById('tk-priority');
+        pBadge.textContent = priority;
+        pBadge.className = 'badge text-white text-xs';
+        if (priority === 'Critical') pBadge.classList.add('bg-danger');
+        else if (priority === 'High') pBadge.classList.add('bg-warning', 'text-dark');
+        else if (priority === 'Medium') pBadge.classList.add('bg-primary');
+        else pBadge.classList.add('bg-success');
+
+        // Status Badge styling
+        const sBadge = document.getElementById('tk-status');
+        sBadge.textContent = status;
+        sBadge.className = 'badge text-xs py-1 px-2';
+        if (status === 'Pending') sBadge.classList.add('bg-warning', 'text-dark');
+        else if (status === 'Approved') sBadge.classList.add('bg-info', 'text-white');
+        else if (status === 'Resolved') sBadge.classList.add('bg-success', 'text-white');
+        else sBadge.classList.add('bg-primary', 'text-white');
+
+        // Set Timeline Steps based on status
+        const steps = ['tl-step-1', 'tl-step-2', 'tl-step-3', 'tl-step-4', 'tl-step-5'];
+        steps.forEach(stepId => {
+            const el = document.getElementById(stepId);
+            el.className = 'rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-1';
+            el.innerHTML = '<i class="bi bi-circle"></i>';
+        });
+
+        // Toggle Timeline steps checkmarks
+        if (status === 'Pending') {
+            setStepState('tl-step-1', 'success');
+        } else if (status === 'Approved') {
+            setStepState('tl-step-1', 'success');
+            setStepState('tl-step-2', 'success');
+        } else if (status === 'In Progress') {
+            setStepState('tl-step-1', 'success');
+            setStepState('tl-step-2', 'success');
+            setStepState('tl-step-3', 'success');
+            setStepState('tl-step-4', 'warning');
+        } else if (status === 'Resolved') {
+            setStepState('tl-step-1', 'success');
+            setStepState('tl-step-2', 'success');
+            setStepState('tl-step-3', 'success');
+            setStepState('tl-step-4', 'success');
+            setStepState('tl-step-5', 'success');
+        }
+
+        // Focus Tab
+        const formTab = new bootstrap.Tab(document.getElementById('form-tab'));
+        formTab.show();
+        
+        window.showToast('Loaded details for Ticket ' + id, 'info');
+    }
+
+    function setStepState(stepId, state) {
+        const el = document.getElementById(stepId);
+        if (state === 'success') {
+            el.className = 'rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-1';
+            el.innerHTML = '<i class="bi bi-check-lg"></i>';
+        } else if (state === 'warning') {
+            el.className = 'rounded-circle bg-warning text-white d-flex align-items-center justify-content-center mx-auto mb-1';
+            el.innerHTML = '<i class="bi bi-play-fill"></i>';
+        }
+        el.style.width = '20px';
+        el.style.height = '20px';
+    }
+</script>
+{% endblock %}

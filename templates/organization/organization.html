@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Organization Module - AssetFlow ERP{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Organization</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Organization Management</h4>
+        <p class="text-secondary small mb-0">Control company departments, resource categories, and employee directory structures.</p>
+    </div>
+</div>
+
+<!-- Navigation Tabs -->
+<ul class="nav nav-tabs-erp d-flex gap-2" id="orgTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="dept-tab" data-bs-toggle="tab" data-bs-target="#dept-panel" type="button" role="tab" aria-controls="dept-panel" aria-selected="true">
+            <i class="bi bi-building me-2"></i>Departments
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category-panel" type="button" role="tab" aria-controls="category-panel" aria-selected="false">
+            <i class="bi bi-tags me-2"></i>Asset Categories
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="employee-tab" data-bs-toggle="tab" data-bs-target="#employee-panel" type="button" role="tab" aria-controls="employee-panel" aria-selected="false">
+            <i class="bi bi-people me-2"></i>Employee Directory
+        </button>
+    </li>
+</ul>
+
+<!-- Tab Contents -->
+<div class="tab-content mt-3" id="orgTabsContent">
+    
+    <!-- Tab 1: Departments -->
+    <div class="tab-pane fade show active" id="dept-panel" role="tabpanel" aria-labelledby="dept-tab">
+        <div class="table-responsive-container">
+            <div class="table-filter-bar">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="nav-search-box" style="min-width: 250px;">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="nav-search-input" placeholder="Search departments..." data-table-search="departments-table">
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-erp-primary btn-sm d-flex align-items-center gap-2" onclick="window.showToast('Log Department Registration', 'info');">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Add Department</span>
+                    </button>
+                </div>
+            </div>
+            
+            <table class="table table-erp text-nowrap align-middle" id="departments-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Dept Code</th>
+                        <th class="sortable">Department Name</th>
+                        <th class="sortable">Manager</th>
+                        <th class="sortable">Location</th>
+                        <th class="sortable text-end">Budget Cap ($)</th>
+                        <th class="sortable">Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>DEP-IT</strong></td>
+                        <td>IT Infrastructure & Operations</td>
+                        <td>James Anderson</td>
+                        <td>NY HQ - Floor 4</td>
+                        <td class="text-end fw-semibold">$500,000.00</td>
+                        <td><span class="badge-erp badge-erp-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Department: DEP-IT', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Department: DEP-IT', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>DEP-RD</strong></td>
+                        <td>Research & Development</td>
+                        <td>Dr. Alan Grant</td>
+                        <td>SF Hub - Lab B</td>
+                        <td class="text-end fw-semibold">$350,000.00</td>
+                        <td><span class="badge-erp badge-erp-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Department: DEP-RD', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Department: DEP-RD', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>DEP-MKT</strong></td>
+                        <td>Global Marketing</td>
+                        <td>Clara Oswald</td>
+                        <td>London - Floor 2</td>
+                        <td class="text-end fw-semibold">$120,000.00</td>
+                        <td><span class="badge-erp badge-erp-warning">Under Review</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Department: DEP-MKT', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Department: DEP-MKT', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Pagination Footer -->
+            <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light-card flex-wrap gap-2">
+                <span class="text-secondary text-xs">Showing 1 to 3 of 3 entries</span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Asset Categories -->
+    <div class="tab-pane fade" id="category-panel" role="tabpanel" aria-labelledby="category-tab">
+        <div class="table-responsive-container">
+            <div class="table-filter-bar">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="nav-search-box" style="min-width: 250px;">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="nav-search-input" placeholder="Search categories..." data-table-search="categories-table">
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-erp-primary btn-sm d-flex align-items-center gap-2" onclick="window.showToast('Log Category Registration', 'info');">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Add Category</span>
+                    </button>
+                </div>
+            </div>
+            
+            <table class="table table-erp text-nowrap align-middle" id="categories-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Category Code</th>
+                        <th class="sortable">Category Name</th>
+                        <th class="sortable text-center">Active Assets</th>
+                        <th class="sortable text-end">Depreciation Rate</th>
+                        <th class="sortable">Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CAT-HW</strong></td>
+                        <td>IT Hardware (Laptops, Servers, Switches)</td>
+                        <td class="text-center">604 Items</td>
+                        <td class="text-end fw-semibold">33.3% / yr (Straight Line)</td>
+                        <td><span class="badge-erp badge-erp-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Category: CAT-HW', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Category: CAT-HW', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>CAT-SW</strong></td>
+                        <td>Enterprise Software Licensing</td>
+                        <td class="text-center">340 Items</td>
+                        <td class="text-end fw-semibold">100% / yr (Immediate)</td>
+                        <td><span class="badge-erp badge-erp-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Category: CAT-SW', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Category: CAT-SW', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>CAT-FRN</strong></td>
+                        <td>Office Furniture & Fixtures</td>
+                        <td class="text-center">190 Items</td>
+                        <td class="text-end fw-semibold">20% / yr (Declining Balance)</td>
+                        <td><span class="badge-erp badge-erp-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Category: CAT-FRN', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Category: CAT-FRN', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Pagination Footer -->
+            <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light-card flex-wrap gap-2">
+                <span class="text-secondary text-xs">Showing 1 to 3 of 3 entries</span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Employee Directory -->
+    <div class="tab-pane fade" id="employee-panel" role="tabpanel" aria-labelledby="employee-tab">
+        <div class="table-responsive-container">
+            <div class="table-filter-bar">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="nav-search-box" style="min-width: 250px;">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="nav-search-input" placeholder="Search employee directory..." data-table-search="employees-table">
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-erp-primary btn-sm d-flex align-items-center gap-2" onclick="window.showToast('Register New Employee Profile', 'info');">
+                        <i class="bi bi-person-plus"></i>
+                        <span>Register Employee</span>
+                    </button>
+                </div>
+            </div>
+            
+            <table class="table table-erp text-nowrap align-middle" id="employees-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Employee ID</th>
+                        <th class="sortable">Full Name</th>
+                        <th class="sortable">Email Address</th>
+                        <th class="sortable">Department</th>
+                        <th class="sortable">Assigned Assets</th>
+                        <th class="sortable">Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>EMP-0311</strong></td>
+                        <td>Sarah Jenkins</td>
+                        <td>admin@assetflow.com</td>
+                        <td>IT Infrastructure</td>
+                        <td>4 Assets</td>
+                        <td><span class="badge-erp badge-erp-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Employee: EMP-0311', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Employee: EMP-0311', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>EMP-0314</strong></td>
+                        <td>Dave Grohl</td>
+                        <td>dave.grohl@assetflow.com</td>
+                        <td>Research & Development</td>
+                        <td>2 Assets</td>
+                        <td><span class="badge-erp badge-erp-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Employee: EMP-0314', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Employee: EMP-0314', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>EMP-0322</strong></td>
+                        <td>Amelia Watson</td>
+                        <td>amelia.w@assetflow.com</td>
+                        <td>Global Marketing</td>
+                        <td>1 Asset</td>
+                        <td><span class="badge-erp badge-erp-warning">On Leave</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" onclick="window.showToast('Edit Employee: EMP-0322', 'info')"><i class="bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" onclick="window.showToast('Delete Employee: EMP-0322', 'danger')"><i class="bi-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Pagination Footer -->
+            <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light-card flex-wrap gap-2">
+                <span class="text-secondary text-xs">Showing 1 to 3 of 3 entries</span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

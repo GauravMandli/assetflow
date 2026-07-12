@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Asset Allocation - AssetFlow ERP{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Asset Allocation</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Custody & Allocation Controls</h4>
+        <p class="text-secondary small mb-0">Manage asset handouts, process peer-to-peer transfers, log condition states, and approve requests.</p>
+    </div>
+</div>
+
+<!-- Tabs Navigation -->
+<ul class="nav nav-tabs-erp d-flex gap-2" id="allocationTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="custody-tab" data-bs-toggle="tab" data-bs-target="#custody-panel" type="button" role="tab" aria-controls="custody-panel" aria-selected="true">
+            <i class="bi bi-person-check me-2"></i>Active Custodies & Returns
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="request-tab" data-bs-toggle="tab" data-bs-target="#request-panel" type="button" role="tab" aria-controls="request-panel" aria-selected="false">
+            <i class="bi bi-arrow-left-right me-2"></i>Allocate & Transfer Forms
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="approval-tab" data-bs-toggle="tab" data-bs-target="#approval-panel" type="button" role="tab" aria-controls="approval-panel" aria-selected="false">
+            <i class="bi bi-shield-check me-2"></i>Approval Queue
+            <span class="badge bg-danger rounded-pill ms-1" style="font-size:0.65rem;">2</span>
+        </button>
+    </li>
+</ul>
+
+<!-- Tabs Content Wrapper -->
+<div class="tab-content mt-3" id="allocationTabsContent">
+    
+    <!-- Tab 1: Active Custodies & Returns Table -->
+    <div class="tab-pane fade show active" id="custody-panel" role="tabpanel" aria-labelledby="custody-tab">
+        <div class="table-responsive-container">
+            <div class="table-filter-bar">
+                <h6 class="m-0 fw-bold">Enterprise Allocation Registry</h6>
+                <div class="nav-search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="nav-search-input" placeholder="Search employee or asset..." data-table-search="active-custody-table">
+                </div>
+            </div>
+            <table class="table table-erp text-nowrap align-middle" id="active-custody-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Custody Ref</th>
+                        <th class="sortable">Asset Tag & Model</th>
+                        <th class="sortable">Current Custodian</th>
+                        <th class="sortable">Allocation Date</th>
+                        <th class="sortable">Initial Condition</th>
+                        <th class="sortable">Current Condition</th>
+                        <th class="sortable">Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ALC-2026-302</strong></td>
+                        <td>
+                            <div class="fw-semibold">MacBook Pro 16" (AST-2026-091)</div>
+                            <span class="text-secondary text-xs">S/N: CN-0M3MAX-782</span>
+                        </td>
+                        <td>Sarah Jenkins (IT)</td>
+                        <td>2026-02-14</td>
+                        <td><span class="badge bg-light text-dark text-xs">Brand New</span></td>
+                        <td><span class="badge bg-light text-dark text-xs">Excellent</span></td>
+                        <td><span class="badge-erp badge-erp-success">Approved</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" title="Transfer Asset" onclick="switchToFormWithValues('AST-2026-091', 'Sarah Jenkins')"><i class="bi-arrow-left-right"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" title="Return Asset" onclick="window.showToast('Asset returned. Condition logged as Excellent.', 'success'); this.parentElement.parentElement.remove();"><i class="bi-arrow-counterclockwise"></i> Return</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>ALC-2026-305</strong></td>
+                        <td>
+                            <div class="fw-semibold">Dell UltraSharp 32" (AST-2026-042)</div>
+                            <span class="text-secondary text-xs">S/N: MX-0D324K-192</span>
+                        </td>
+                        <td>Dave Grohl (R&D)</td>
+                        <td>2026-01-20</td>
+                        <td><span class="badge bg-light text-dark text-xs">Excellent</span></td>
+                        <td><span class="badge bg-light text-warning text-xs">Fair (Scratch on stand)</span></td>
+                        <td><span class="badge-erp badge-erp-success">Approved</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-erp-secondary py-1 px-2 me-1" title="Transfer Asset" onclick="switchToFormWithValues('AST-2026-042', 'Dave Grohl')"><i class="bi-arrow-left-right"></i></button>
+                            <button class="btn btn-sm btn-outline-danger py-1 px-2" title="Return Asset" onclick="window.showToast('Asset returned. Condition logged as Fair.', 'success'); this.parentElement.parentElement.remove();"><i class="bi-arrow-counterclockwise"></i> Return</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab 2: Allocate & Transfer Forms -->
+    <div class="tab-pane fade" id="request-panel" role="tabpanel" aria-labelledby="request-tab">
+        <div class="row g-4">
+            
+            <!-- Allocate Asset Form -->
+            <div class="col-12 col-lg-6">
+                <div class="card-erp h-100">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-box-arrow-in-right text-primary me-2"></i> Initial Asset Allocation</h5>
+                    <form onsubmit="event.preventDefault(); window.showToast('Allocation request submitted!', 'success');">
+                        <div class="mb-3">
+                            <label class="form-label">Asset to Allocate</label>
+                            <select class="form-select" required>
+                                <option value="">Select Available Asset</option>
+                                <option value="AST-105">Herman Miller Aeron (AST-2026-105)</option>
+                                <option value="AST-070">ThinkPad X1 Carbon (AST-2026-070)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Assignee Employee</label>
+                            <select class="form-select" required>
+                                <option value="">Select Assignee</option>
+                                <option value="Sarah">Sarah Jenkins (IT)</option>
+                                <option value="Dave">Dave Grohl (R&D)</option>
+                                <option value="Amelia">Amelia Watson (Marketing)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Handover Condition Notes</label>
+                            <textarea class="form-control" rows="2" placeholder="e.g. Clean condition, charging adapters included..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-erp-primary w-100 mt-2">Submit Allocation Request</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Transfer Custody Form -->
+            <div class="col-12 col-lg-6">
+                <div class="card-erp h-100">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-arrow-left-right text-warning me-2"></i> Custody Transfer Request</h5>
+                    <form onsubmit="event.preventDefault(); window.showToast('Custody Transfer Request Registered!', 'success');">
+                        <div class="mb-3">
+                            <label class="form-label">Asset to Transfer</label>
+                            <input type="text" id="transfer-asset-input" class="form-control" placeholder="e.g. AST-2026-091" required>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Current Custodian</label>
+                                <input type="text" id="transfer-current-custodian" class="form-control" placeholder="Current Employee" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Target Custodian</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Target Employee</option>
+                                    <option value="1">Amelia Watson (Marketing)</option>
+                                    <option value="2">Dave Grohl (R&D)</option>
+                                    <option value="3">James Anderson (IT)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Handover Condition Notes</label>
+                            <textarea class="form-control" rows="2" placeholder="State current physical condition details of the asset..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning text-white w-100 mt-2">Submit Transfer Request</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Tab 3: Approval Screen & Request Timeline -->
+    <div class="tab-pane fade" id="approval-panel" role="tabpanel" aria-labelledby="approval-tab">
+        <div class="row g-4">
+            
+            <!-- Queue Card 1 -->
+            <div class="col-12 col-xl-6">
+                <div class="card-erp">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-light text-dark font-monospace text-xs">REF: ALC-REQ-9832</span>
+                        <span class="badge-erp badge-erp-warning">Awaiting Admin Sign-off</span>
+                    </div>
+                    
+                    <h5 class="fw-bold mb-1">Asset Allocation: MacBook Air M2</h5>
+                    <p class="text-secondary text-xs mb-3">Requested for: <strong>David Beckham</strong> • Department: <strong>Sales Hub</strong></p>
+                    
+                    <!-- Status Timeline Component -->
+                    <div class="bg-light rounded p-3 mb-3">
+                        <h6 class="fw-bold mb-2" style="font-size:0.75rem;">Request Step Progress</h6>
+                        <div class="d-flex justify-content-between align-items-center text-center text-xs position-relative px-2">
+                            <!-- Process Line -->
+                            <div class="position-absolute bg-primary" style="height: 2px; width: 80%; top: 9px; left: 10%; z-index: 1;"></div>
+                            
+                            <div style="z-index: 2;">
+                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px; font-size:0.6rem;"><i class="bi bi-check-lg"></i></div>
+                                <span class="text-secondary" style="font-size: 0.65rem;">Requested</span>
+                            </div>
+                            <div style="z-index: 2;">
+                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px; font-size:0.6rem;"><i class="bi bi-check-lg"></i></div>
+                                <span class="text-secondary" style="font-size: 0.65rem;">Manager OK</span>
+                            </div>
+                            <div style="z-index: 2;">
+                                <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px; font-size:0.6rem;"><i class="bi bi-clock"></i></div>
+                                <span class="fw-bold text-warning" style="font-size: 0.65rem;">IT Handover</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-secondary text-xs mb-3">
+                        <strong>Condition Notes:</strong> Inspected by manager. Re-certified as: <em>"Clean screen, battery healthy at 98%, includes chargers."</em>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <button class="btn btn-sm btn-outline-danger" onclick="window.showToast('Request Rejected', 'danger'); this.parentElement.parentElement.parentElement.remove();">Reject</button>
+                        <button class="btn btn-sm btn-success" onclick="window.showToast('Custody Approved and Tag Registered', 'success'); this.parentElement.parentElement.parentElement.remove();">Approve & Handover</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Queue Card 2 -->
+            <div class="col-12 col-xl-6">
+                <div class="card-erp">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-light text-dark font-monospace text-xs">REF: TRN-REQ-1022</span>
+                        <span class="badge-erp badge-erp-info">Custody Transfer Pending</span>
+                    </div>
+                    
+                    <h5 class="fw-bold mb-1">Custody Transfer: iPad Air 5th Gen</h5>
+                    <p class="text-secondary text-xs mb-3">From: <strong>Amelia Watson (Design)</strong> → To: <strong>Dave Grohl (R&D)</strong></p>
+                    
+                    <!-- Status Timeline Component -->
+                    <div class="bg-light rounded p-3 mb-3">
+                        <h6 class="fw-bold mb-2" style="font-size:0.75rem;">Request Step Progress</h6>
+                        <div class="d-flex justify-content-between align-items-center text-center text-xs position-relative px-2">
+                            <div class="position-absolute bg-primary" style="height: 2px; width: 80%; top: 9px; left: 10%; z-index: 1;"></div>
+                            
+                            <div style="z-index: 2;">
+                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px; font-size:0.6rem;"><i class="bi bi-check-lg"></i></div>
+                                <span class="text-secondary" style="font-size: 0.65rem;">Transf. Logged</span>
+                            </div>
+                            <div style="z-index: 2;">
+                                <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px; font-size:0.6rem;"><i class="bi bi-clock"></i></div>
+                                <span class="fw-bold text-warning" style="font-size: 0.65rem;">Custodian Sign</span>
+                            </div>
+                            <div style="z-index: 2;">
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-1" style="width:20px; height:20px; font-size:0.6rem;"><i class="bi bi-circle"></i></div>
+                                <span class="text-secondary" style="font-size: 0.65rem;">Approved</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-secondary text-xs mb-3">
+                        <strong>Condition Notes:</strong> Amelia Watson states: <em>"In protective shell, original screen glass intact, no external dents."</em>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <button class="btn btn-sm btn-outline-danger" onclick="window.showToast('Transfer request cancelled', 'danger'); this.parentElement.parentElement.parentElement.remove();">Deny</button>
+                        <button class="btn btn-sm btn-success" onclick="window.showToast('Custody transferred. Database nodes synchronized.', 'success'); this.parentElement.parentElement.parentElement.remove();">Authorize Transfer</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab switching with prefilled transfer values
+    function switchToFormWithValues(assetTag, custodian) {
+        document.getElementById('transfer-asset-input').value = assetTag;
+        document.getElementById('transfer-current-custodian').value = custodian;
+        
+        const requestTab = new bootstrap.Tab(document.getElementById('request-tab'));
+        requestTab.show();
+        
+        window.showToast('Populated transfer form for ' + assetTag, 'info');
+    }
+</script>
+{% endblock %}

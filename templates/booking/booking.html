@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resource Bookings - AssetFlow ERP{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Bookings</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Shared Resource Bookings</h4>
+        <p class="text-secondary small mb-0">Reserve conference rooms, vehicles, and lab equipment using schedule grids and slot cards.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Left Column: Calendar Grid -->
+    <div class="col-12 col-xl-8">
+        <div class="card-erp h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-calendar3 text-primary me-2"></i> Schedule Calendar</h5>
+                <span class="fw-semibold text-sm">March 2026</span>
+            </div>
+            
+            <div class="calendar-grid">
+                <!-- Days Headers -->
+                <div class="calendar-day-header">Mon</div>
+                <div class="calendar-day-header">Tue</div>
+                <div class="calendar-day-header">Wed</div>
+                <div class="calendar-day-header">Thu</div>
+                <div class="calendar-day-header">Fri</div>
+                <div class="calendar-day-header">Sat</div>
+                <div class="calendar-day-header">Sun</div>
+
+                <!-- Calendar Cells (March 2026) -->
+                <div class="calendar-cell other-month"><span class="calendar-day-number">23</span></div>
+                <div class="calendar-cell other-month"><span class="calendar-day-number">24</span></div>
+                <div class="calendar-cell other-month"><span class="calendar-day-number">25</span></div>
+                <div class="calendar-cell other-month"><span class="calendar-day-number">26</span></div>
+                <div class="calendar-cell other-month"><span class="calendar-day-number">27</span></div>
+                <div class="calendar-cell other-month"><span class="calendar-day-number">28</span></div>
+                <!-- March 1st -->
+                <div class="calendar-cell" onclick="selectCalendarDay(1)"><span class="calendar-day-number">1</span></div>
+
+                <!-- Week 2 -->
+                <div class="calendar-cell" onclick="selectCalendarDay(2)">
+                    <span class="calendar-day-number">2</span>
+                    <div class="calendar-event bg-primary-light text-primary border-start border-primary border-3">Tesla Fleet #2</div>
+                </div>
+                <div class="calendar-cell" onclick="selectCalendarDay(3)"><span class="calendar-day-number">3</span></div>
+                <div class="calendar-cell" onclick="selectCalendarDay(4)"><span class="calendar-day-number">4</span></div>
+                <div class="calendar-cell" onclick="selectCalendarDay(5)">
+                    <span class="calendar-day-number">5</span>
+                    <div class="calendar-event bg-success-light text-success border-start border-success border-3">Conf Room A</div>
+                </div>
+                <div class="calendar-cell" onclick="selectCalendarDay(6)"><span class="calendar-day-number">6</span></div>
+                <div class="calendar-cell" onclick="selectCalendarDay(7)"><span class="calendar-day-number">7</span></div>
+                <div class="calendar-cell" onclick="selectCalendarDay(8)"><span class="calendar-day-number">8</span></div>
+
+                <!-- Week 3 -->
+                <div class="calendar-cell" onclick="selectCalendarDay(9)"><span class="calendar-day-number">9</span></div>
+                <div class="calendar-cell today" onclick="selectCalendarDay(10)">
+                    <span class="calendar-day-number">10</span>
+                    <div class="calendar-event bg-warning-light text-warning border-start border-warning border-3">3D Printer Rig</div>
+                </div>
+                <div class="calendar-cell" onclick="selectCalendarDay(11)"><span class="calendar-day-number">11</span></div>
+                <div class="calendar-cell" onclick="selectCalendarDay(12)"><span class="calendar-day-number">12</span></div>
+                <div class="calendar-cell" onclick="selectCalendarDay(13)">
+                    <span class="calendar-day-number">13</span>
+                    <div class="calendar-event bg-danger-light text-danger border-start border-danger border-3">Testing Rack A</div>
+                </div>
+                <div class="calendar-cell" onclick="selectCalendarDay(14)"><span class="calendar-day-number">14</span></div>
+                <div class="calendar-cell" onclick="selectCalendarDay(15)"><span class="calendar-day-number">15</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Time Slot Cards -->
+    <div class="col-12 col-xl-4">
+        <div class="card-erp h-100 d-flex flex-column">
+            <h5 class="mb-2 fw-bold"><i class="bi bi-clock text-primary me-2"></i> Daily Time Slots</h5>
+            <p class="text-secondary text-xs mb-3">Selected Date: <strong id="slot-selected-date">March 10, 2026</strong></p>
+            
+            <div class="d-flex flex-column gap-2 flex-grow-1 overflow-y-auto" style="max-height: 380px;">
+                <!-- Slot 1 -->
+                <div class="border rounded p-3 d-flex justify-content-between align-items-center bg-white shadow-sm" style="border-left: 4px solid var(--success-color) !important;">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-sm">09:00 AM - 10:30 AM</h6>
+                        <span class="text-secondary" style="font-size:0.75rem;">Status: <strong class="text-success">Available</strong></span>
+                    </div>
+                    <button class="btn btn-xs btn-erp-primary py-1 px-2" onclick="openBookingForm('09:00 AM - 10:30 AM');">Reserve</button>
+                </div>
+                <!-- Slot 2 -->
+                <div class="border rounded p-3 d-flex justify-content-between align-items-center bg-light" style="border-left: 4px solid var(--warning-color) !important; opacity:0.85;">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-sm">11:00 AM - 12:30 PM</h6>
+                        <span class="text-secondary" style="font-size:0.75rem;">Booked by: <strong>IT Team (Cisco Switch Setup)</strong></span>
+                    </div>
+                    <span class="badge bg-warning text-white text-xs py-1 px-2">Reserved</span>
+                </div>
+                <!-- Slot 3 -->
+                <div class="border rounded p-3 d-flex justify-content-between align-items-center bg-white shadow-sm" style="border-left: 4px solid var(--success-color) !important;">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-sm">01:00 PM - 02:30 PM</h6>
+                        <span class="text-secondary" style="font-size:0.75rem;">Status: <strong class="text-success">Available</strong></span>
+                    </div>
+                    <button class="btn btn-xs btn-erp-primary py-1 px-2" onclick="openBookingForm('01:00 PM - 02:30 PM');">Reserve</button>
+                </div>
+                <!-- Slot 4 -->
+                <div class="border rounded p-3 d-flex justify-content-between align-items-center bg-light" style="border-left: 4px solid var(--danger-color) !important; opacity:0.85;">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-sm">03:00 PM - 04:30 PM</h6>
+                        <span class="text-secondary" style="font-size:0.75rem;">Booked by: <strong>Design Hub (iPad Review)</strong></span>
+                    </div>
+                    <span class="badge bg-danger text-white text-xs py-1 px-2">Booked</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Form Card -->
+<div class="card-erp mb-4" id="booking-form-card" style="display: none;">
+    <h5 class="fw-bold mb-3"><i class="bi bi-calendar-plus text-primary me-2"></i> Book Selected Slot</h5>
+    <form onsubmit="event.preventDefault(); window.showToast('Resource Reserved Successfully!', 'success'); document.getElementById('booking-form-card').style.display='none';">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Resource Type</label>
+                <select class="form-select" required>
+                    <option value="room">Conference Room A</option>
+                    <option value="vehicle">Tesla Model 3 Fleet #2</option>
+                    <option value="rig">3D Printer Rig</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Selected Date</label>
+                <input type="text" id="form-date-input" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Time Slot</label>
+                <input type="text" id="form-slot-input" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Booked For (Employee)</label>
+                <input type="text" class="form-control" placeholder="Employee Name" required value="Sarah Jenkins">
+            </div>
+            <div class="col-12 text-end">
+                <button type="button" class="btn btn-erp-secondary btn-sm me-2" onclick="document.getElementById('booking-form-card').style.display='none';">Cancel</button>
+                <button type="submit" class="btn btn-erp-primary btn-sm">Confirm Booking</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Booking Registry Table -->
+<div class="table-responsive-container">
+    <div class="table-filter-bar">
+        <div class="d-flex align-items-center gap-2">
+            <h6 class="m-0 fw-bold">Active Reservations Log</h6>
+        </div>
+        <div class="nav-search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" class="nav-search-input" placeholder="Search bookings..." data-table-search="bookings-log-table">
+        </div>
+    </div>
+    
+    <table class="table table-erp text-nowrap align-middle" id="bookings-log-table">
+        <thead>
+            <tr>
+                <th class="sortable">Booking Ref</th>
+                <th class="sortable">Reserved Resource</th>
+                <th class="sortable">Host / Employee</th>
+                <th class="sortable">Date</th>
+                <th class="sortable">Time Window</th>
+                <th class="sortable">Status</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>BKG-2026-981</strong></td>
+                <td>Conference Room A</td>
+                <td>Sarah Jenkins (IT)</td>
+                <td>2026-03-05</td>
+                <td>09:00 AM - 10:30 AM</td>
+                <td><span class="badge-erp badge-erp-success">Upcoming</span></td>
+                <td class="text-end">
+                    <button class="btn btn-xs btn-outline-danger px-2" onclick="window.showToast('Booking cancelled.', 'danger'); this.parentElement.parentElement.remove();"><i class="bi bi-x-circle"></i> Cancel</button>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>BKG-2026-972</strong></td>
+                <td>Tesla Model 3 Fleet #2</td>
+                <td>Marketing Team</td>
+                <td>2026-03-02</td>
+                <td>08:00 AM - 05:00 PM</td>
+                <td><span class="badge-erp badge-erp-info">Completed</span></td>
+                <td class="text-end">
+                    <button class="btn btn-xs btn-erp-secondary px-2" disabled><i class="bi bi-check-circle"></i> Closed</button>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>BKG-2026-914</strong></td>
+                <td>3D Printer Rig</td>
+                <td>Dave Grohl (R&D)</td>
+                <td>2026-02-10</td>
+                <td>01:00 PM - 02:30 PM</td>
+                <td><span class="badge-erp badge-erp-danger">Cancelled</span></td>
+                <td class="text-end">
+                    <button class="btn btn-xs btn-erp-secondary px-2" disabled><i class="bi bi-slash-circle"></i> Cancelled</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Selected Day handler
+    function selectCalendarDay(dayNumber) {
+        document.getElementById('slot-selected-date').textContent = 'March ' + dayNumber + ', 2026';
+        window.showToast('Loaded slots for March ' + dayNumber + ', 2026', 'info');
+        
+        // Populate form if visible
+        if (document.getElementById('booking-form-card').style.display !== 'none') {
+            document.getElementById('form-date-input').value = '2026-03-' + String(dayNumber).padStart(2, '0');
+        }
+    }
+
+    // Open booking form
+    function openBookingForm(slotTime) {
+        const selectedDateText = document.getElementById('slot-selected-date').textContent;
+        // Parse date for input
+        let dateVal = '2026-03-10'; // default
+        if (selectedDateText.includes('March')) {
+            const dayNum = selectedDateText.replace(/[^0-9]/g, '');
+            dateVal = '2026-03-' + String(dayNum).padStart(2, '0');
+        }
+        
+        document.getElementById('form-date-input').value = dateVal;
+        document.getElementById('form-slot-input').value = slotTime;
+        
+        document.getElementById('booking-form-card').style.display = 'block';
+        window.location.hash = 'booking-form-card';
+    }
+</script>
+{% endblock %}
