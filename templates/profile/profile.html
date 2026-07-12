@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Profile - AssetFlow ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">My Profile Settings</h4>
+        <p class="text-secondary small mb-0">Update account credentials, notification settings, and preferences.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Profile Card -->
+    <div class="col-12 col-lg-4">
+        <div class="card-erp text-center py-4">
+            <div class="position-relative d-inline-block mb-3 mx-auto">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Sarah" class="rounded-circle border" style="width: 120px; height: 120px; object-fit: cover;">
+                <button class="btn btn-primary rounded-circle position-absolute bottom-0 end-0 p-1" style="width:32px; height:32px; font-size:0.8rem;" onclick="window.showToast('Select image to upload...', 'info');"><i class="bi bi-camera"></i></button>
+            </div>
+            <h5 class="fw-bold mb-1">Sarah Jenkins</h5>
+            <p class="text-secondary text-xs mb-3">ERP Administrator • IT Department</p>
+            <span class="badge-erp badge-erp-success">Active Session</span>
+            
+            <hr class="my-4">
+
+            <div class="text-start px-3">
+                <h6 class="fw-bold mb-3">Authority Permissions</h6>
+                <div class="d-flex flex-column gap-2 text-xs text-secondary">
+                    <div class="d-flex justify-content-between">
+                        <span>Registry Controls</span>
+                        <span class="text-success fw-bold">Read / Write</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Work Order Sign-off</span>
+                        <span class="text-success fw-bold">Enabled</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>CapEx Limits Overwrite</span>
+                        <span class="text-danger fw-bold">Disabled</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Form -->
+    <div class="col-12 col-lg-8">
+        <div class="card-erp">
+            <h5 class="card-title mb-4">Personal Details</h5>
+            <form onsubmit="event.preventDefault(); window.showToast('Profile Updated Successfully!', 'success');">
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" value="Sarah" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" value="Jenkins" required>
+                    </div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" value="admin@assetflow.com" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" value="+1 (555) 019-2834">
+                    </div>
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <label class="form-label">Default Office Location</label>
+                        <select class="form-select">
+                            <option value="NY" selected>New York HQ</option>
+                            <option value="LDN">London Branch</option>
+                            <option value="TKY">Tokyo Logistics</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Interface Locale Language</label>
+                        <select class="form-select">
+                            <option value="en" selected>English (US)</option>
+                            <option value="es">Español</option>
+                            <option value="ja">日本語</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-erp-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

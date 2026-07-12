@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reports & Analytics - AssetFlow ERP{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Heatmap CSS grid */
+    .heatmap-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.35rem;
+        margin-top: 1rem;
+    }
+    .heatmap-header-col {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        text-align: center;
+        padding-bottom: 0.25rem;
+    }
+    .heatmap-row-header {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+    }
+    .heatmap-cell {
+        height: 28px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-fast);
+    }
+    .heatmap-cell:hover {
+        transform: scale(1.08);
+        filter: brightness(0.9);
+    }
+    .load-low { background-color: rgba(34, 197, 94, 0.15); color: var(--success-color); }
+    .load-medium { background-color: rgba(245, 158, 11, 0.15); color: var(--warning-color); }
+    .load-high { background-color: rgba(239, 68, 68, 0.15); color: var(--danger-color); }
+    .load-none { background-color: var(--bg-secondary); color: var(--text-muted); }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="/dashboard/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Reports</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h4 class="mb-1">Enterprise Analytics Dashboard</h4>
+        <p class="text-secondary small mb-0">Compile CapEx valuations, monitor maintenance budgets, and review booking scheduling loads.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-erp-secondary btn-sm d-flex align-items-center gap-2" onclick="window.showToast('Compiling print preview...', 'info');">
+            <i class="bi bi-printer"></i>
+            <span>Print Ledger</span>
+        </button>
+        <button class="btn btn-erp-secondary btn-sm d-flex align-items-center gap-2" onclick="window.showToast('Generating PDF statement...', 'info');">
+            <i class="bi bi-file-earmark-pdf"></i>
+            <span>Export PDF</span>
+        </button>
+        <button class="btn btn-erp-primary btn-sm d-flex align-items-center gap-2" onclick="window.showToast('Exporting spreadsheet data...', 'success');">
+            <i class="bi bi-file-earmark-excel"></i>
+            <span>Export Excel</span>
+        </button>
+    </div>
+</div>
+
+<!-- Financial Statistics cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="card-erp bg-light">
+            <span class="text-secondary text-xs text-uppercase d-block mb-1">Total Assets Valuation</span>
+            <h3 class="fw-bold mb-0 text-primary">$1,280,450.00</h3>
+            <span class="text-secondary text-xs">Gross CapEx value in catalog</span>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card-erp bg-light">
+            <span class="text-secondary text-xs text-uppercase d-block mb-1">Accumulated Depreciation</span>
+            <h3 class="fw-bold mb-0 text-danger">$345,120.00</h3>
+            <span class="text-secondary text-xs">Calculated straight-line lifecycle limits</span>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card-erp bg-light">
+            <span class="text-secondary text-xs text-uppercase d-block mb-1">Net Book Value</span>
+            <h3 class="fw-bold mb-0 text-success">$935,330.00</h3>
+            <span class="text-secondary text-xs">Asset balance sheet valuation</span>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Grid -->
+<div class="row g-4 mb-4">
+    <!-- Maintenance Trends -->
+    <div class="col-12 col-lg-7">
+        <div class="card-erp h-100">
+            <h5 class="card-title mb-3">Maintenance Spending & Ticket Trends</h5>
+            <div style="height: 260px; position: relative;">
+                <canvas id="maintTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Department allocation summary -->
+    <div class="col-12 col-lg-5">
+        <div class="card-erp h-100">
+            <h5 class="card-title mb-3">Department Resource Allocations</h5>
+            <div style="height: 260px; position: relative;">
+                <canvas id="deptAllocChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Top Valued Assets list -->
+    <div class="col-12 col-lg-6">
+        <div class="card-erp h-100">
+            <h5 class="card-title mb-3">Top High-Valued Assets</h5>
+            <div class="list-group list-group-flush text-xs">
+                <div class="list-group-item bg-transparent px-0 py-2.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="text-dark d-block">Tesla Model 3 Fleet #2</strong>
+                        <span class="text-secondary">Ref: AST-2026-088 • Vehicles</span>
+                    </div>
+                    <span class="fw-bold text-primary">$48,200.00</span>
+                </div>
+                <div class="list-group-item bg-transparent px-0 py-2.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="text-dark d-block">Cisco Switch stack Core</strong>
+                        <span class="text-secondary">Ref: AST-2026-009 • IT Hardware</span>
+                    </div>
+                    <span class="fw-bold text-primary">$4,850.00</span>
+                </div>
+                <div class="list-group-item bg-transparent px-0 py-2.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="text-dark d-block">MacBook Pro 16" M3 Max</strong>
+                        <span class="text-secondary">Ref: AST-2026-091 • IT Hardware</span>
+                    </div>
+                    <span class="fw-bold text-primary">$3,499.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Heatmap Placeholder -->
+    <div class="col-12 col-lg-6">
+        <div class="card-erp h-100">
+            <h5 class="card-title mb-1">Booking Reservation Heatmap</h5>
+            <p class="text-secondary text-xs">Analyze reservation load densities by hours and weekdays.</p>
+            
+            <div class="heatmap-grid">
+                <!-- Header columns -->
+                <div></div>
+                <div class="heatmap-header-col">09 AM</div>
+                <div class="heatmap-header-col">11 AM</div>
+                <div class="heatmap-header-col">01 PM</div>
+                <div class="heatmap-header-col">03 PM</div>
+                <div class="heatmap-header-col">05 PM</div>
+
+                <!-- Mon -->
+                <div class="heatmap-row-header">Mon</div>
+                <div class="heatmap-cell load-low" onclick="window.showToast('Mon 09:00 AM load: Low (1 Booking)', 'success')">1</div>
+                <div class="heatmap-cell load-high" onclick="window.showToast('Mon 11:00 AM load: High (4 Bookings)', 'danger')">4</div>
+                <div class="heatmap-cell load-medium" onclick="window.showToast('Mon 01:00 PM load: Medium (2 Bookings)', 'warning')">2</div>
+                <div class="heatmap-cell load-none" onclick="window.showToast('Mon 03:00 PM load: None (0 Bookings)', 'info')">0</div>
+                <div class="heatmap-cell load-low" onclick="window.showToast('Mon 05:00 PM load: Low (1 Booking)', 'success')">1</div>
+
+                <!-- Tue -->
+                <div class="heatmap-row-header">Tue</div>
+                <div class="heatmap-cell load-medium" onclick="window.showToast('Tue load: Medium', 'warning')">2</div>
+                <div class="heatmap-cell load-medium" onclick="window.showToast('Tue load: Medium', 'warning')">3</div>
+                <div class="heatmap-cell load-low" onclick="window.showToast('Tue load: Low', 'success')">1</div>
+                <div class="heatmap-cell load-high" onclick="window.showToast('Tue load: High', 'danger')">5</div>
+                <div class="heatmap-cell load-none">0</div>
+
+                <!-- Wed -->
+                <div class="heatmap-row-header">Wed</div>
+                <div class="heatmap-cell load-high" onclick="window.showToast('Wed load: High', 'danger')">4</div>
+                <div class="heatmap-cell load-low">1</div>
+                <div class="heatmap-cell load-none">0</div>
+                <div class="heatmap-cell load-medium">2</div>
+                <div class="heatmap-cell load-low">1</div>
+
+                <!-- Thu -->
+                <div class="heatmap-row-header">Thu</div>
+                <div class="heatmap-cell load-low">1</div>
+                <div class="heatmap-cell load-high" onclick="window.showToast('Thu load: High', 'danger')">4</div>
+                <div class="heatmap-cell load-medium">2</div>
+                <div class="heatmap-cell load-none">0</div>
+                <div class="heatmap-cell load-none">0</div>
+
+                <!-- Fri -->
+                <div class="heatmap-row-header">Fri</div>
+                <div class="heatmap-cell load-none">0</div>
+                <div class="heatmap-cell load-medium">2</div>
+                <div class="heatmap-cell load-high" onclick="window.showToast('Fri load: High', 'danger')">5</div>
+                <div class="heatmap-cell load-low">1</div>
+                <div class="heatmap-cell load-none">0</div>
+            </div>
+            
+            <div class="d-flex gap-3 justify-content-end text-xs mt-3 text-secondary">
+                <span><span class="d-inline-block rounded-circle bg-success" style="width:8px; height:8px;"></span> Low load</span>
+                <span><span class="d-inline-block rounded-circle bg-warning" style="width:8px; height:8px;"></span> Med load</span>
+                <span><span class="d-inline-block rounded-circle bg-danger" style="width:8px; height:8px;"></span> High load</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 1. Maintenance Trend Chart (Double Bar/Line Chart)
+    const ctxMaint = document.getElementById('maintTrendChart').getContext('2d');
+    const maintTrendChart = new Chart(ctxMaint, {
+        type: 'bar',
+        data: {
+            labels: ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26'],
+            datasets: [{
+                type: 'line',
+                label: 'Service Cost ($)',
+                data: [4200, 3900, 8500, 5200, 6800, 11000],
+                borderColor: '#4F46E5',
+                borderWidth: 3,
+                tension: 0.3,
+                yAxisID: 'y1'
+            }, {
+                type: 'bar',
+                label: 'Tickets Resolved',
+                data: [12, 8, 22, 14, 18, 28],
+                backgroundColor: 'rgba(108, 99, 255, 0.4)',
+                borderRadius: 4,
+                yAxisID: 'y'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: 'var(--text-secondary)' }
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: { color: 'var(--border-light)' },
+                    ticks: { color: 'var(--text-secondary)' }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: { drawOnChartArea: false },
+                    ticks: { color: 'var(--text-secondary)' }
+                },
+                x: {
+                    ticks: { color: 'var(--text-secondary)' }
+                }
+            }
+        }
+    });
+
+    // 2. Department Allocation Chart (Horizontal Bar Chart)
+    const ctxDept = document.getElementById('deptAllocChart').getContext('2d');
+    const deptAllocChart = new Chart(ctxDept, {
+        type: 'bar',
+        data: {
+            labels: ['IT Infra', 'R&D Lab', 'Sales', 'Marketing', 'HR'],
+            datasets: [{
+                label: 'Assets Custody Count',
+                data: [342, 184, 92, 48, 60],
+                backgroundColor: [
+                    '#6C63FF',
+                    '#4F46E5',
+                    '#22C55E',
+                    '#F59E0B',
+                    '#06B6D4'
+                ],
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'var(--border-light)' },
+                    ticks: { color: 'var(--text-secondary)' }
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: { color: 'var(--text-secondary)' }
+                }
+            }
+        }
+    });
+
+    // Theme Switch Event Listener for Charts Redraw
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                maintTrendChart.options.plugins.legend.labels.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+                maintTrendChart.options.scales.y.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+                maintTrendChart.options.scales.y1.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+                maintTrendChart.options.scales.x.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+                maintTrendChart.options.scales.y.grid.color = getComputedStyle(document.documentElement).getPropertyValue('--border-light').trim();
+                
+                deptAllocChart.options.scales.x.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+                deptAllocChart.options.scales.y.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+                deptAllocChart.options.scales.x.grid.color = getComputedStyle(document.documentElement).getPropertyValue('--border-light').trim();
+                
+                maintTrendChart.update();
+                deptAllocChart.update();
+            }, 50);
+        });
+    }
+</script>
+{% endblock %}
