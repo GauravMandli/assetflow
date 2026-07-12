@@ -8,153 +8,190 @@
 {% endblock %}
 
 {% block content %}
-<!-- Welcome Header Section -->
-<div class="card-erp border-0 mb-4 p-4 text-white" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
+<!-- Welcome Card Section (Material / Odoo Inspired Gradient) -->
+<div class="card-erp border-0 mb-4 p-4 text-white animate-fade-in" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
     <div class="row align-items-center">
-        <div class="col-md-8">
+        <div class="col-lg-8">
             <h3 class="mb-1 text-white">Welcome back, Sarah Jenkins</h3>
-            <p class="mb-0 text-white-50 text-sm">Enterprise System status: <strong>98.4% Healthy</strong>. You have <strong>3 pending approvals</strong> and <strong>1 active audit</strong> requiring your attention today.</p>
+            <p class="mb-0 text-white-50 text-sm">System efficiency status: <strong class="text-white">98.4% Normal</strong>. All active directory nodes are operational. You have <strong>3 pending handovers</strong> today.</p>
         </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end">
-            <!-- Quick Actions Buttons -->
-            <button class="btn btn-light text-primary btn-sm fw-bold d-flex align-items-center gap-2" data-drawer-trigger="add-asset-drawer">
-                <i class="bi bi-plus-lg"></i>
-                <span>Register Asset</span>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 d-flex flex-wrap gap-2 justify-content-lg-end">
+            <!-- Quick Action Buttons -->
+            <button class="btn btn-light btn-sm fw-bold text-primary d-flex align-items-center gap-1" data-drawer-trigger="add-asset-drawer">
+                <i class="bi bi-plus-lg"></i> Register Asset
             </button>
-            <button class="btn btn-light text-primary btn-sm fw-bold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#dashboardBookingModal">
-                <i class="bi bi-calendar-plus"></i>
-                <span>Book Resource</span>
+            <button class="btn btn-light btn-sm fw-bold text-primary d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#quickBookingModal">
+                <i class="bi bi-calendar-plus"></i> Book Resource
             </button>
-            <button class="btn btn-light text-primary btn-sm fw-bold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#dashboardMaintenanceModal">
-                <i class="bi bi-wrench"></i>
-                <span>Raise Maintenance</span>
+            <button class="btn btn-light btn-sm fw-bold text-primary d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#quickMaintModal">
+                <i class="bi bi-wrench"></i> Raise Service
             </button>
         </div>
     </div>
 </div>
 
-<!-- 6 KPI Cards Row -->
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xxl-6 g-3 mb-4">
-    <!-- Card 1: Assets Available -->
-    <div class="col">
-        <div class="card-erp h-100 metric-card py-3 px-3">
-            <div class="metric-details">
-                <h6>Assets Available</h6>
-                <h3 class="fw-bold mb-0">498</h3>
-                <span class="text-success text-xs fw-semibold"><i class="bi bi-check-circle-fill"></i> In Storage</span>
+<!-- Dedicated Quick Actions Grid Section -->
+<div class="row g-3 mb-4">
+    <!-- Register Asset -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card-erp h-100 text-center py-3 px-3 shadow-sm border border-light" style="cursor: pointer;" data-drawer-trigger="add-asset-drawer">
+            <div class="metric-icon-box bg-primary-light text-primary rounded-circle mx-auto mb-2" style="width: 44px; height: 44px;">
+                <i class="bi bi-plus-lg fs-5"></i>
             </div>
-            <div class="metric-icon-box bg-success-light text-success" style="width:38px; height:38px; font-size:1.2rem;">
-                <i class="bi bi-box-seam"></i>
-            </div>
+            <h6 class="fw-bold mb-1" style="font-size:0.85rem;">Register Asset</h6>
+            <p class="text-muted text-xs mb-0">Add new items to inventory</p>
         </div>
     </div>
-    
-    <!-- Card 2: Allocated -->
-    <div class="col">
-        <div class="card-erp h-100 metric-card py-3 px-3">
-            <div class="metric-details">
-                <h6>Allocated Items</h6>
-                <h3 class="fw-bold mb-0">984</h3>
-                <span class="text-primary text-xs fw-semibold"><i class="bi bi-person-check-fill"></i> In Active Custody</span>
+    <!-- Allocate Asset -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card-erp h-100 text-center py-3 px-3 shadow-sm border border-light" style="cursor: pointer;" onclick="window.location.href='{% url 'allocation' %}'">
+            <div class="metric-icon-box bg-success-light text-success rounded-circle mx-auto mb-2" style="width: 44px; height: 44px;">
+                <i class="bi bi-arrow-left-right fs-5"></i>
             </div>
-            <div class="metric-icon-box bg-primary-light text-primary" style="width:38px; height:38px; font-size:1.2rem;">
-                <i class="bi bi-arrow-left-right"></i>
+            <h6 class="fw-bold mb-1" style="font-size:0.85rem;">Allocate Asset</h6>
+            <p class="text-muted text-xs mb-0">Assign custodies to employees</p>
+        </div>
+    </div>
+    <!-- Book Resource -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card-erp h-100 text-center py-3 px-3 shadow-sm border border-light" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#quickBookingModal">
+            <div class="metric-icon-box bg-info-light text-info rounded-circle mx-auto mb-2" style="width: 44px; height: 44px;">
+                <i class="bi bi-calendar-plus fs-5"></i>
+            </div>
+            <h6 class="fw-bold mb-1" style="font-size:0.85rem;">Book Resource</h6>
+            <p class="text-muted text-xs mb-0">Schedule shared rooms or gear</p>
+        </div>
+    </div>
+    <!-- Raise Maintenance -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card-erp h-100 text-center py-3 px-3 shadow-sm border border-light" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#quickMaintModal">
+            <div class="metric-icon-box bg-danger-light text-danger rounded-circle mx-auto mb-2" style="width: 44px; height: 44px;">
+                <i class="bi bi-wrench fs-5"></i>
+            </div>
+            <h6 class="fw-bold mb-1" style="font-size:0.85rem;">Raise Maintenance</h6>
+            <p class="text-muted text-xs mb-0">Log hardware repair tickets</p>
+        </div>
+    </div>
+</div>
+
+<!-- 6 KPI Grid Cards Row -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3 mb-4">
+    <!-- 1: Assets Available -->
+    <div class="col">
+        <div class="card-erp h-100 metric-card py-3 px-3 shadow-sm border border-light border-start border-4 border-success">
+            <div class="metric-details">
+                <h6 class="text-xs text-muted mb-1 text-uppercase fw-semibold">Assets Available</h6>
+                <h3 class="fw-bold mb-1">498</h3>
+                <span class="text-success text-xs fw-semibold"><i class="bi bi-check-circle"></i> In Storage</span>
+            </div>
+            <div class="metric-icon-box bg-success-light text-success rounded-circle" style="width:38px; height:38px;">
+                <i class="bi bi-box-seam fs-5"></i>
             </div>
         </div>
     </div>
 
-    <!-- Card 3: Maintenance -->
+    <!-- 2: Assets Allocated -->
     <div class="col">
-        <div class="card-erp h-100 metric-card py-3 px-3">
+        <div class="card-erp h-100 metric-card py-3 px-3 shadow-sm border border-light border-start border-4 border-primary">
             <div class="metric-details">
-                <h6>In Maintenance</h6>
-                <h3 class="fw-bold mb-0">28</h3>
-                <span class="text-danger text-xs fw-semibold"><i class="bi bi-exclamation-triangle-fill"></i> Action Needed</span>
+                <h6 class="text-xs text-muted mb-1 text-uppercase fw-semibold">Assets Allocated</h6>
+                <h3 class="fw-bold mb-1">984</h3>
+                <span class="text-primary text-xs fw-semibold"><i class="bi bi-person-check"></i> Active Custodies</span>
             </div>
-            <div class="metric-icon-box bg-danger-light text-danger" style="width:38px; height:38px; font-size:1.2rem;">
-                <i class="bi bi-wrench"></i>
+            <div class="metric-icon-box bg-primary-light text-primary rounded-circle" style="width:38px; height:38px;">
+                <i class="bi bi-arrow-left-right fs-5"></i>
             </div>
         </div>
     </div>
 
-    <!-- Card 4: Bookings -->
+    <!-- 3: Maintenance Today -->
     <div class="col">
-        <div class="card-erp h-100 metric-card py-3 px-3">
+        <div class="card-erp h-100 metric-card py-3 px-3 shadow-sm border border-light border-start border-4 border-danger">
             <div class="metric-details">
-                <h6>Active Bookings</h6>
-                <h3 class="fw-bold mb-0">15</h3>
-                <span class="text-info text-xs fw-semibold"><i class="bi bi-calendar-check-fill"></i> Reserved Today</span>
+                <h6 class="text-xs text-muted mb-1 text-uppercase fw-semibold">Maint. Today</h6>
+                <h3 class="fw-bold mb-1">28</h3>
+                <span class="text-danger text-xs fw-semibold"><i class="bi bi-exclamation-triangle"></i> 8 Critical</span>
             </div>
-            <div class="metric-icon-box bg-info-light text-info" style="width:38px; height:38px; font-size:1.2rem;">
-                <i class="bi bi-calendar-event"></i>
+            <div class="metric-icon-box bg-danger-light text-danger rounded-circle" style="width:38px; height:38px;">
+                <i class="bi bi-wrench fs-5"></i>
             </div>
         </div>
     </div>
 
-    <!-- Card 5: Pending Transfers -->
+    <!-- 4: Active Bookings -->
     <div class="col">
-        <div class="card-erp h-100 metric-card py-3 px-3">
+        <div class="card-erp h-100 metric-card py-3 px-3 shadow-sm border border-light border-start border-4 border-info">
             <div class="metric-details">
-                <h6>Pending Transfers</h6>
-                <h3 class="fw-bold mb-0">8</h3>
-                <span class="text-warning text-xs fw-semibold"><i class="bi bi-arrow-repeat"></i> Awaiting Approval</span>
+                <h6 class="text-xs text-muted mb-1 text-uppercase fw-semibold">Active Bookings</h6>
+                <h3 class="fw-bold mb-1">15</h3>
+                <span class="text-info text-xs fw-semibold"><i class="bi bi-calendar-check"></i> Reserved Today</span>
             </div>
-            <div class="metric-icon-box bg-warning-light text-warning" style="width:38px; height:38px; font-size:1.2rem;">
-                <i class="bi bi-shuffle"></i>
+            <div class="metric-icon-box bg-info-light text-info rounded-circle" style="width:38px; height:38px;">
+                <i class="bi bi-calendar-event fs-5"></i>
             </div>
         </div>
     </div>
 
-    <!-- Card 6: Upcoming Returns -->
+    <!-- 5: Pending Transfers -->
     <div class="col">
-        <div class="card-erp h-100 metric-card py-3 px-3">
+        <div class="card-erp h-100 metric-card py-3 px-3 shadow-sm border border-light border-start border-4 border-warning">
             <div class="metric-details">
-                <h6>Upcoming Returns</h6>
-                <h3 class="fw-bold mb-0">12</h3>
+                <h6 class="text-xs text-muted mb-1 text-uppercase fw-semibold">Pending Trans.</h6>
+                <h3 class="fw-bold mb-1">8</h3>
+                <span class="text-warning text-xs fw-semibold"><i class="bi bi-arrow-repeat"></i> Handovers</span>
+            </div>
+            <div class="metric-icon-box bg-warning-light text-warning rounded-circle" style="width:38px; height:38px;">
+                <i class="bi bi-shuffle fs-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6: Upcoming Returns -->
+    <div class="col">
+        <div class="card-erp h-100 metric-card py-3 px-3 shadow-sm border border-light border-start border-4 border-secondary">
+            <div class="metric-details">
+                <h6 class="text-xs text-muted mb-1 text-uppercase fw-semibold">Upcoming Returns</h6>
+                <h3 class="fw-bold mb-1">12</h3>
                 <span class="text-secondary text-xs fw-semibold"><i class="bi bi-clock-history"></i> Next 7 Days</span>
             </div>
-            <div class="metric-icon-box bg-light text-secondary" style="width:38px; height:38px; font-size:1.2rem;">
-                <i class="bi bi-arrow-counterclockwise"></i>
+            <div class="metric-icon-box bg-light text-secondary rounded-circle" style="width:38px; height:38px;">
+                <i class="bi bi-arrow-counterclockwise fs-5"></i>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Charts Placement -->
+<!-- Charts Row Grid with Loading Skeletons -->
 <div class="row g-4 mb-4">
-    <!-- Category distribution -->
+    <!-- Category Doughnut -->
     <div class="col-12 col-lg-4">
-        <div class="card-erp h-100 skeleton-loader-wrapper">
-            <!-- Skeleton Loader -->
+        <div class="card-erp h-100 skeleton-loader-wrapper p-4">
             <div class="skeleton-placeholder">
                 <div class="skeleton-pulse skeleton-line medium"></div>
-                <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
-                    <div class="skeleton-pulse skeleton-circle" style="width: 140px; height: 140px;"></div>
+                <div class="d-flex justify-content-center align-items-center" style="height: 180px;">
+                    <div class="skeleton-pulse skeleton-circle" style="width: 120px; height: 120px;"></div>
                 </div>
             </div>
-            <!-- Real Content -->
             <div class="skeleton-content">
-                <h5 class="card-title mb-3">Asset Classification</h5>
-                <div style="height: 250px; position: relative;">
-                    <canvas id="dashboardCategoryChart"></canvas>
+                <h5 class="card-title mb-3">Asset Distribution</h5>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="categoryDashboardChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Utilization trends -->
+    <!-- Trends Line -->
     <div class="col-12 col-lg-8">
-        <div class="card-erp h-100 skeleton-loader-wrapper">
-            <!-- Skeleton Loader -->
+        <div class="card-erp h-100 skeleton-loader-wrapper p-4">
             <div class="skeleton-placeholder">
                 <div class="skeleton-pulse skeleton-line medium mb-3"></div>
-                <div class="skeleton-pulse skeleton-box" style="height: 180px;"></div>
+                <div class="skeleton-pulse skeleton-box" style="height: 160px;"></div>
             </div>
-            <!-- Real Content -->
             <div class="skeleton-content">
-                <h5 class="card-title mb-3">Resource Allocation Trends</h5>
-                <div style="height: 250px; position: relative;">
-                    <canvas id="dashboardTrendChart"></canvas>
+                <h5 class="card-title mb-3">Custody Allocation Trends</h5>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="trendsDashboardChart"></canvas>
                 </div>
             </div>
         </div>
@@ -163,45 +200,52 @@
 
 <!-- Split Tables Section -->
 <div class="row g-4">
-    <!-- Recent Maintenance Requests -->
-    <div class="col-12 col-xl-6">
-        <div class="table-responsive-container mb-0 h-100 d-flex flex-column">
-            <div class="table-filter-bar d-flex justify-content-between align-items-center">
-                <h6 class="m-0 fw-bold"><i class="bi bi-wrench-adjustable text-danger me-1"></i> Active Maintenance Tickets</h6>
-                <a href="/maintenance/" class="text-xs fw-semibold text-primary">Manage Tickets</a>
+    <!-- Recent Activity Table -->
+    <div class="col-12 col-lg-6">
+        <div class="table-responsive-container mb-0 h-100 d-flex flex-column shadow-sm border border-light">
+            <div class="table-filter-bar bg-light border-bottom px-3 py-2 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 fw-bold"><i class="bi bi-arrow-left-right text-primary me-2"></i> Recent Activity Logs</h6>
+                <a href="{% url 'allocation' %}" class="text-xs fw-semibold text-primary text-decoration-none">Manage Custody</a>
             </div>
             <div class="flex-grow-1">
-                <table class="table table-erp text-nowrap align-middle" style="font-size:0.8rem;">
+                <table class="table table-erp text-nowrap align-middle mb-0" style="font-size:0.8rem;">
                     <thead>
                         <tr>
-                            <th>Ref Code</th>
-                            <th>Asset model</th>
-                            <th>Description</th>
-                            <th>Priority</th>
-                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Asset Details</th>
+                            <th>Employee / Custodian</th>
+                            <th>Action Type</th>
+                            <th>Status State</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>#MNT-0982</strong></td>
-                            <td>Cisco Router Stack</td>
-                            <td>Fan failure in Server Rack A-3</td>
-                            <td><span class="badge-erp badge-erp-danger">Critical</span></td>
-                            <td><span class="badge-erp badge-erp-warning">Requested</span></td>
+                            <td>2026-07-12</td>
+                            <td><strong>MacBook Pro 16" (AST-091)</strong></td>
+                            <td>Sarah Jenkins (IT)</td>
+                            <td><span class="badge bg-success-light text-success px-2 py-0.5 rounded-pill text-xs">Allocation</span></td>
+                            <td><span class="badge-erp badge-erp-success">Approved</span></td>
                         </tr>
                         <tr>
-                            <td><strong>#MNT-0974</strong></td>
-                            <td>Tesla Model 3 #2</td>
-                            <td>Brake pad replacement service</td>
-                            <td><span class="badge-erp badge-erp-warning">Medium</span></td>
+                            <td>2026-07-11</td>
+                            <td><strong>iPad Air 5th Gen (AST-056)</strong></td>
+                            <td>Dave Grohl (R&D)</td>
+                            <td><span class="badge bg-warning-light text-warning px-2 py-0.5 rounded-pill text-xs">Custody Transfer</span></td>
+                            <td><span class="badge-erp badge-erp-warning">Pending Sign</span></td>
+                        </tr>
+                        <tr>
+                            <td>2026-07-10</td>
+                            <td><strong>Dell 32" 4K Monitor (AST-042)</strong></td>
+                            <td>John Doe (Sales)</td>
+                            <td><span class="badge bg-danger-light text-danger px-2 py-0.5 rounded-pill text-xs">Return Storage</span></td>
+                            <td><span class="badge bg-secondary text-white text-xs px-2 py-0.5 rounded-pill">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>2026-07-09</td>
+                            <td><strong>Cisco Catalyst 9300 (AST-009)</strong></td>
+                            <td>Server Room A</td>
+                            <td><span class="badge bg-primary-light text-primary px-2 py-0.5 rounded-pill text-xs">Maintenance</span></td>
                             <td><span class="badge-erp badge-erp-info">Scheduled</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>#MNT-0968</strong></td>
-                            <td>Herman Miller Aeron</td>
-                            <td>Armrest replacement assembly</td>
-                            <td><span class="badge-erp badge-erp-success">Low</span></td>
-                            <td><span class="badge-erp badge-erp-success">In Progress</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -209,63 +253,59 @@
         </div>
     </div>
 
-    <!-- Latest Allocations -->
-    <div class="col-12 col-xl-6">
-        <div class="table-responsive-container mb-0 h-100 d-flex flex-column">
-            <div class="table-filter-bar d-flex justify-content-between align-items-center">
-                <h6 class="m-0 fw-bold"><i class="bi bi-person-check text-primary me-1"></i> Latest Asset Allocations</h6>
-                <a href="/allocation/" class="text-xs fw-semibold text-primary">Manage Custodies</a>
+    <!-- Recent Notifications List -->
+    <div class="col-12 col-lg-6">
+        <div class="card-erp h-100 d-flex flex-column p-4 shadow-sm border border-light">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="m-0 fw-bold"><i class="bi bi-bell text-danger me-2"></i> Recent System Alerts</h6>
+                <a href="{% url 'notifications' %}" class="text-xs fw-semibold text-primary text-decoration-none">Logs Center</a>
             </div>
-            <div class="flex-grow-1">
-                <table class="table table-erp text-nowrap align-middle" style="font-size:0.8rem;">
-                    <thead>
-                        <tr>
-                            <th>Alloc Ref</th>
-                            <th>Asset Details</th>
-                            <th>Assigned User</th>
-                            <th>Date Assigned</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>#ALC-0422</strong></td>
-                            <td>MacBook Pro 16" (AST-091)</td>
-                            <td>Sarah Jenkins (IT)</td>
-                            <td>2026-02-14</td>
-                            <td><span class="badge-erp badge-erp-success">Approved</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ALC-0425</strong></td>
-                            <td>Dell 32" 4K Monitor (AST-042)</td>
-                            <td>Dave Grohl (R&D)</td>
-                            <td>2026-01-20</td>
-                            <td><span class="badge-erp badge-erp-success">Approved</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ALC-0430</strong></td>
-                            <td>iPad Air 5th Gen (AST-056)</td>
-                            <td>Amelia Watson (Design)</td>
-                            <td>2026-03-10</td>
-                            <td><span class="badge-erp badge-erp-info">Requested</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+            
+            <div class="d-flex flex-column gap-3 text-xs">
+                <div class="d-flex gap-3 align-items-start border-bottom pb-2">
+                    <div class="bg-warning-light text-warning rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                        <i class="bi bi-wrench"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark d-block">Maintenance Overdue Alert</strong>
+                        <span class="text-secondary text-xs">Tesla Model 3 Brake Service #MNT-0974 is past due date.</span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 align-items-start border-bottom pb-2">
+                    <div class="bg-danger-light text-danger rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark d-block">Failed Admin Authorization Attempt</strong>
+                        <span class="text-secondary text-xs">Administrator OTP failed on IP 198.162.1.200 today.</span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 align-items-start">
+                    <div class="bg-success-light text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark d-block">London Hub Audit Completed</strong>
+                        <span class="text-secondary text-xs">All physical counts matched records. Audit AUD-010 closed.</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal dialog to Book Resource -->
-<div class="modal fade" id="dashboardBookingModal" tabindex="-1" aria-labelledby="dashboardBookingModalLabel" aria-hidden="true">
+<!-- Modal Quick Book Resource -->
+<div class="modal fade" id="quickBookingModal" tabindex="-1" aria-labelledby="quickBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: var(--border-radius-md); background-color: var(--card-bg);">
             <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-bold" id="dashboardBookingModalLabel"><i class="bi bi-calendar-plus text-primary me-2"></i> Book Shared Resource</h5>
+                <h5 class="modal-title fw-bold" id="quickBookingModalLabel"><i class="bi bi-calendar-plus text-primary me-2"></i> Book Shared Resource</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body py-4">
-                <form onsubmit="event.preventDefault(); window.showToast('Resource Booked Successfully!', 'success'); bootstrap.Modal.getInstance(document.getElementById('dashboardBookingModal')).hide();">
+                <form onsubmit="event.preventDefault(); window.showToast('Resource Booked Successfully!', 'success'); bootstrap.Modal.getInstance(document.getElementById('quickBookingModal')).hide();">
                     <div class="mb-3">
                         <label class="form-label">Resource Type</label>
                         <select class="form-select" required>
@@ -299,16 +339,16 @@
     </div>
 </div>
 
-<!-- Modal dialog to Raise Maintenance -->
-<div class="modal fade" id="dashboardMaintenanceModal" tabindex="-1" aria-labelledby="dashboardMaintenanceModalLabel" aria-hidden="true">
+<!-- Modal Quick Log Maintenance -->
+<div class="modal fade" id="quickMaintModal" tabindex="-1" aria-labelledby="quickMaintModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: var(--border-radius-md); background-color: var(--card-bg);">
             <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-bold" id="dashboardMaintenanceModalLabel"><i class="bi bi-wrench text-primary me-2"></i> Log Service Ticket</h5>
+                <h5 class="modal-title fw-bold" id="quickMaintModalLabel"><i class="bi bi-wrench text-primary me-2"></i> Log Service Ticket</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body py-4">
-                <form onsubmit="event.preventDefault(); window.showToast('Maintenance service request raised!', 'success'); bootstrap.Modal.getInstance(document.getElementById('dashboardMaintenanceModal')).hide();">
+                <form onsubmit="event.preventDefault(); window.showToast('Maintenance service request raised!', 'success'); bootstrap.Modal.getInstance(document.getElementById('quickMaintModal')).hide();">
                     <div class="mb-3">
                         <label class="form-label">Select Target Asset</label>
                         <select class="form-select" required>
@@ -344,7 +384,7 @@
 {% block extra_js %}
 <script>
     // Initialize Dashboard Chart Visualizations
-    const ctxCat = document.getElementById('dashboardCategoryChart').getContext('2d');
+    const ctxCat = document.getElementById('categoryDashboardChart').getContext('2d');
     const categoryChart = new Chart(ctxCat, {
         type: 'doughnut',
         data: {
@@ -380,7 +420,7 @@
         }
     });
 
-    const ctxTrend = document.getElementById('dashboardTrendChart').getContext('2d');
+    const ctxTrend = document.getElementById('trendsDashboardChart').getContext('2d');
     const trendChart = new Chart(ctxTrend, {
         type: 'line',
         data: {
